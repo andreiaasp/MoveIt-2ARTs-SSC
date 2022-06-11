@@ -1,6 +1,7 @@
 package com.ipleiria.moveit.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,10 +13,19 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.ipleiria.moveit.R
 import com.ipleiria.moveit.adapters.PrescriptionAdapter
 import com.ipleiria.moveit.databinding.FragmentPrescriptionsBinding
 import com.ipleiria.moveit.models.Prescription
+import com.ipleiria.moveit.models.User
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class PrescriptionFragment : Fragment() {
     private lateinit var prescriptionBinding: FragmentPrescriptionsBinding
@@ -45,10 +55,9 @@ class PrescriptionFragment : Fragment() {
 
 
     private fun addInfo() {
-        val number: Number
+        val auth = Firebase.auth
         val inflater = LayoutInflater.from(requireContext())
         val v = inflater.inflate(R.layout.add_prescription_dialog,null)
-        /**set view*/
 
         val name = v.findViewById<EditText>(R.id.name)
         val duration = v.findViewById<EditText>(R.id.duration)
@@ -58,11 +67,17 @@ class PrescriptionFragment : Fragment() {
         addDialog.setView(v)
         addDialog.setPositiveButton("Ok"){
                 dialog,_->
-            val names = name.text.toString()
+            val name = name.text.toString()
             val number = Integer.parseInt(duration.getText().toString())
-            prescriptionList.add(Prescription("Name: $names",number))
+            val prescription = Prescription(name,number)
+
+            prescriptionList.add(Prescription(name,number))
             prescriptionAdapter.notifyDataSetChanged()
             Toast.makeText(requireContext(),"Adding Prescription Information Success",Toast.LENGTH_SHORT).show()
+
+            GlobalScope.launch{
+                createPrescriptionFirebase(prescription, auth);
+            }
             dialog.dismiss()
         }
         addDialog.setNegativeButton("Cancel"){
@@ -73,5 +88,12 @@ class PrescriptionFragment : Fragment() {
         }
         addDialog.create()
         addDialog.show()
+    }
+
+    private suspend fun createPrescriptionFirebase(prescription: Prescription, auth: FirebaseAuth) {
+        //CRIAR CHILD Prescription
+        val firebase = Firebase.database.getReference("Users")
+        firebase.child(auth.uid!!).child("Prescriptions").push().setValue(prescription).await()
+        Log.d("PRESCRIPTION",prescription.toString())
     }
 }

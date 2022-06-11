@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/AwarenessAPI 28-03-2022/AwarenessAPI" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/Near_Me_Kotlin_Application" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/android-places-ktx" vcs="Git" />
