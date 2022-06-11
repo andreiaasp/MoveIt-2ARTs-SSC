@@ -8,21 +8,21 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.ipleiria.moveit.R
 import com.ipleiria.moveit.adapters.PrescriptionAdapter
 import com.ipleiria.moveit.databinding.FragmentPrescriptionsBinding
 import com.ipleiria.moveit.models.Prescription
-import com.ipleiria.moveit.models.User
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -33,6 +33,7 @@ class PrescriptionFragment : Fragment() {
     private lateinit var recv: RecyclerView
     private lateinit var prescriptionList:ArrayList<Prescription>
     private lateinit var prescriptionAdapter: PrescriptionAdapter
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,17 +43,62 @@ class PrescriptionFragment : Fragment() {
         prescriptionList = ArrayList()
         addsBtn = prescriptionBinding.addingBtn
         recv = prescriptionBinding.mRecycler
+        auth = Firebase.auth
 
         prescriptionAdapter = PrescriptionAdapter(prescriptionList)
-
-        recv.layoutManager = LinearLayoutManager(requireContext())
-        recv.adapter = prescriptionAdapter
         /**set Dialog*/
         addsBtn.setOnClickListener { addInfo() }
 
         return prescriptionBinding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        //(activity as AppCompatActivity?)!!.supportActionBar!!.title = "Prescriptions"
+        prescriptionBinding.mRecycler.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            setHasFixedSize(true)
+            adapter = prescriptionAdapter
+        }
+
+        getPrescriptionsFirebase()
+
+    }
+
+    private fun getPrescriptionsFirebase() {
+
+        var ref = Firebase.database.getReference("Users").child(auth.uid!!).child("Prescriptions")
+
+        ref.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    prescriptionList = ArrayList()
+                    for (postSnapshot in snapshot.children) {
+                        val duration = postSnapshot.child("duration").getValue().toString().toInt()
+                        val name = postSnapshot.child("name").getValue() as String
+                        val prescription = Prescription(name, duration)
+                        println(prescription)
+                        prescriptionList.add(prescription!!)
+                    }
+                    prescriptionBinding.mRecycler.adapter = PrescriptionAdapter(prescriptionList)
+                    println("AQUI " + prescriptionList)
+
+                    Toast.makeText(
+                        requireContext(),
+                        "${prescriptionList.size}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
 
     private fun addInfo() {
         val auth = Firebase.auth
@@ -72,7 +118,6 @@ class PrescriptionFragment : Fragment() {
             val prescription = Prescription(name,number)
 
             prescriptionList.add(Prescription(name,number))
-            prescriptionAdapter.notifyDataSetChanged()
             Toast.makeText(requireContext(),"Adding Prescription Information Success",Toast.LENGTH_SHORT).show()
 
             GlobalScope.launch{

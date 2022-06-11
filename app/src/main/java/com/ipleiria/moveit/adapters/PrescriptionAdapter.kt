@@ -1,10 +1,8 @@
 package com.ipleiria.moveit.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ipleiria.moveit.R
@@ -12,17 +10,14 @@ import com.ipleiria.moveit.models.Prescription
 
 class PrescriptionAdapter(val prescriptionList:ArrayList<Prescription>):RecyclerView.Adapter<PrescriptionAdapter.PrescriptionViewHolder>(){
 
-    inner class PrescriptionViewHolder(val v: View): RecyclerView.ViewHolder(v){
-        var name:TextView
-        var duration:TextView
+    class PrescriptionViewHolder(v: View): RecyclerView.ViewHolder(v){
+        //var name:TextView
+        //var duration:TextView
         //var mMenus: ImageView
-
-        init {
-            name = v.findViewById(R.id.mTitle)
-            duration = v.findViewById(R.id.mDuration)
+            var name = v.findViewById(R.id.mTitle) as TextView
+            var duration = v.findViewById(R.id.mDuration) as TextView
             /*mMenus = v.findViewById(R.id.mMenus)
             mMenus.setOnClickListener { popupMenus(it) }*/
-        }
 
     }
 
