@@ -1,5 +1,6 @@
 package com.ipleiria.moveit.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,6 +21,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.ipleiria.moveit.R
+import com.ipleiria.moveit.activity.Map
 import com.ipleiria.moveit.adapters.PrescriptionAdapter
 import com.ipleiria.moveit.databinding.FragmentPrescriptionsBinding
 import com.ipleiria.moveit.models.Prescription
@@ -46,7 +48,7 @@ class PrescriptionFragment : Fragment() {
         auth = Firebase.auth
 
         prescriptionAdapter = PrescriptionAdapter(prescriptionList)
-        /**set Dialog*/
+
         addsBtn.setOnClickListener { addInfo() }
 
         return prescriptionBinding.root
@@ -81,7 +83,23 @@ class PrescriptionFragment : Fragment() {
                         println(prescription)
                         prescriptionList.add(prescription!!)
                     }
-                    prescriptionBinding.mRecycler.adapter = PrescriptionAdapter(prescriptionList)
+                    var adapter = PrescriptionAdapter(prescriptionList)
+                    prescriptionBinding.mRecycler.adapter = adapter
+                    adapter.setOnItemClickListener(object: PrescriptionAdapter.onItemClickListener{
+                        override fun onItemClick(position: Int) {
+                            Toast.makeText(
+                                requireContext(),
+                                "You clicked on item no. ${position}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            val intent = Intent(getActivity(),Map::class.java)
+                            intent.putExtra("duration",prescriptionList[position].duration)
+                            startActivity(intent)
+
+                        }
+
+
+                    })
                     println("AQUI " + prescriptionList)
 
                     Toast.makeText(

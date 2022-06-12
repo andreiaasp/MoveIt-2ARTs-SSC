@@ -2,10 +2,5 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/AwarenessAPI 28-03-2022/AwarenessAPI" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Near_Me_Kotlin_Application" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/android-places-ktx" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/google-fit-android" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/maps-platform-101-android" vcs="Git" />
   </component>
 </project>

@@ -10,21 +10,20 @@ import com.ipleiria.moveit.models.Prescription
 
 class PrescriptionAdapter(val prescriptionList:ArrayList<Prescription>):RecyclerView.Adapter<PrescriptionAdapter.PrescriptionViewHolder>(){
 
-    class PrescriptionViewHolder(v: View): RecyclerView.ViewHolder(v){
-        //var name:TextView
-        //var duration:TextView
-        //var mMenus: ImageView
-            var name = v.findViewById(R.id.mTitle) as TextView
-            var duration = v.findViewById(R.id.mDuration) as TextView
-            /*mMenus = v.findViewById(R.id.mMenus)
-            mMenus.setOnClickListener { popupMenus(it) }*/
+    private lateinit var mlistener:onItemClickListener
 
+    interface onItemClickListener{
+        fun onItemClick(position: Int)
+    }
+
+    fun setOnItemClickListener(listener:onItemClickListener){
+        mlistener = listener
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PrescriptionViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val v  = inflater.inflate(R.layout.item_prescription,parent,false)
-        return PrescriptionViewHolder(v)
+        return PrescriptionViewHolder(v,mlistener)
     }
 
     override fun onBindViewHolder(holder: PrescriptionViewHolder, position: Int) {
@@ -35,5 +34,23 @@ class PrescriptionAdapter(val prescriptionList:ArrayList<Prescription>):Recycler
 
     override fun getItemCount(): Int {
         return  prescriptionList.size
+    }
+
+    class PrescriptionViewHolder(v: View,listener:onItemClickListener): RecyclerView.ViewHolder(v){
+        //var name:TextView
+        //var duration:TextView
+        //var mMenus: ImageView
+        var name = v.findViewById(R.id.mTitle) as TextView
+        var duration = v.findViewById(R.id.mDuration) as TextView
+
+        init {
+            v.setOnClickListener {
+                listener.onItemClick(adapterPosition)
+            }
+        }
+
+        /*mMenus = v.findViewById(R.id.mMenus)
+        mMenus.setOnClickListener { popupMenus(it) }*/
+
     }
 }
