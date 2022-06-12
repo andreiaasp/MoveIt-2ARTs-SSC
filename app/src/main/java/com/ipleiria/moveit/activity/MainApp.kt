@@ -12,6 +12,7 @@ import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.ipleiria.moveit.MainActivity
 import com.ipleiria.moveit.databinding.RegisterBinding
 import com.ipleiria.moveit.models.User
 import kotlinx.coroutines.*
@@ -106,7 +107,6 @@ class MainApp : AppCompatActivity() {
         }
         runOnUiThread {
             Toast.makeText(applicationContext,"Password Reset Email Sent" ,Toast.LENGTH_LONG).show();
-
         }
 
 
