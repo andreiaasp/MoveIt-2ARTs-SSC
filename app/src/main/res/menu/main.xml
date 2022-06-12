@@ -9,5 +9,9 @@
             android:id="@+id/btnSetting"
             android:icon="@drawable/settings"
             android:title="Settings" />
+        <item
+            android:id="@+id/btnLogout"
+            android:icon="@drawable/logout"
+            android:title="Logout" />
     </group>
 </menu>
