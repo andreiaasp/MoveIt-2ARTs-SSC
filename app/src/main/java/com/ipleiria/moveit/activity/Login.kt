@@ -1,6 +1,7 @@
 package com.ipleiria.moveit.activity
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -9,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.ipleiria.moveit.MainActivity
-import com.ipleiria.moveit.activity.MainApp
 import com.ipleiria.moveit.databinding.LoginBinding
 
 class Login : AppCompatActivity(){
@@ -28,6 +28,9 @@ class Login : AppCompatActivity(){
         pb.visibility = View.INVISIBLE;
 
         setContentView(binding.root)
+        val pref = applicationContext
+            .getSharedPreferences("MyPref", 0)
+        val editor: SharedPreferences.Editor = pref.edit()
 
         binding.btnSignUp.setOnClickListener {
             startActivity(Intent(this, Register::class.java))
@@ -45,7 +48,8 @@ class Login : AppCompatActivity(){
                     if(task.isSuccessful && auth.currentUser?.isEmailVerified!!){
                         Log.d("LOGIN","Login Success")
                         binding.progressBar2.visibility = View.INVISIBLE;
-
+                        editor.putString("email", email);
+                        editor.commit();
                         val intent = Intent(this@Login, MainActivity::class.java)
                         startActivity(intent)
                     }

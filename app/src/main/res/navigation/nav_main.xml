@@ -10,4 +10,9 @@
         android:name="com.ipleiria.moveit.fragments.PrescriptionFragment"
         tools:layout="@layout/fragment_prescriptions" />
 
+    <fragment
+        android:id="@+id/btnPoseDetection"
+        android:name="com.ipleiria.moveit.fragments.PoseDetectionFragment"
+        tools:layout="@layout/fragment_pose_detection" />
+
 </navigation>

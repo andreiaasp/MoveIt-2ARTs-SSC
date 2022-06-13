@@ -103,7 +103,7 @@
                 android:layout_marginHorizontal="30dp"
                 android:layout_marginTop="10dp"
                 android:padding="15dp"
-                android:text="SignUp"
+                android:text="Registar"
                 android:textStyle="bold"
                 app:cornerRadius="20dp"
                 app:elevation="10dp"/>
