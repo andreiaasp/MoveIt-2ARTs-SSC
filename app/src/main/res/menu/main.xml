@@ -4,20 +4,20 @@
         <item
             android:id="@+id/btnPrescriptions"
             android:icon="@drawable/home"
-            android:title="Prescriptions" />
+            android:title="Prescrições" />
 
         <item
             android:id="@+id/btnPoseDetection"
             android:icon="@drawable/home"
-            android:title="PoseDetection" />
+            android:title="Deteção de Pose" />
 
         <item
             android:id="@+id/btnSetting"
             android:icon="@drawable/settings"
-            android:title="Settings" />
+            android:title="Definições" />
         <item
             android:id="@+id/btnLogout"
             android:icon="@drawable/logout"
-            android:title="Logout" />
+            android:title="Sair" />
     </group>
 </menu>

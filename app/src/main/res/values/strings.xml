@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">MoveIt</string>
-    <string name="login_string">I have an account. Log in</string>
+    <string name="login_string">Eu tenho uma conta. Log in</string>
 
-    <string name="menu_item_settings" translatable="false">Settings</string>
+    <string name="menu_item_settings" translatable="false">Definições</string>
 
 
     <!-- Strings for camera settings. -->

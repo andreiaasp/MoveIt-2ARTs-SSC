@@ -77,7 +77,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="30dp"
             android:gravity="end"
-            android:text="Forget password?"
+            android:text="Esqueceu-se da password?"
             android:textColor="@color/white"
             android:textSize="20dp" />
 
@@ -109,7 +109,7 @@
             android:layout_marginHorizontal="30dp"
             android:layout_marginTop="10dp"
             android:padding="15dp"
-            android:text="Signup"
+            android:text="Registar"
             android:backgroundTint="@color/light_grey"
             android:textColor="@color/primary"
             android:textStyle="bold"
