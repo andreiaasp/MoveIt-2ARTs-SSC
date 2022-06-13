@@ -35,6 +35,9 @@ import com.ipleiria.moveit.R
 import com.ipleiria.moveit.constants.ProjectConstant
 import com.ipleiria.moveit.databinding.MapViewBinding
 import com.ipleiria.moveit.models.GooglePlace
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.IOException
 
 
@@ -258,53 +261,54 @@ class Map: AppCompatActivity(), OnMapReadyCallback {
             .build()
         val location = LatLng(currentLocation.latitude, currentLocation.longitude)
 
-        try {
-            var request = PlacesApi.nearbySearchQuery(context, convertCoordType(location))
-                .radius(2000)
-                .type(type)
-                .await()
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                var request = PlacesApi.nearbySearchQuery(context, convertCoordType(location))
+                    .radius(2000)
+                    .type(type)
+                    .await()
 
-            if (request.results != null && request.results.size > 0) {
-                googlePlaceList.clear()
-                mGoogleMap?.clear()
+                if (request.results != null && request.results.size > 0) {
+                    googlePlaceList.clear()
+                    mGoogleMap?.clear()
 
-                for (r in request.results) {
-                        val details = PlacesApi.placeDetails(context, r.placeId).await()
-                        val name = details.name
+                    for (r in request.results) {
+                        val name = r.name
                         //val icon: URL = details.icon
-                        val lat = details.geometry.location.lat
-                        val lng = details.geometry.location.lng
+                        val lat = r.geometry.location.lat
+                        val lng = r.geometry.location.lng
                         //val photos = details.photos as Photo
-                        val vicinity = details.vicinity
-                        val placeId = details.placeId
-                        val rating = details.rating
+                        val vicinity = r.vicinity
+                        val placeId = r.placeId
+                        val rating = r.rating
                         //val types = details.types as Array<AddressType>
-                        val place = GooglePlace(lat,lng,name, placeId,rating,vicinity)
-                        val time = getDistance(place.lat,place.lng)
-                            println(place.name)
-                            println("TIME "+ time)
-                    var boolean = time <= duration +5
-                    var boolean1 = time > duration
-                        if((!googlePlaceList.contains(place)) && (time <= duration +5) && (time > duration) ){
+                        val place = GooglePlace(lat, lng, name, placeId, rating, vicinity)
+                        val time = getDistance(place.lat, place.lng)
+                        println(place.name)
+                        println("TIME " + time)
+                        var boolean = time <= duration + 5
+                        var boolean1 = time > duration
+                        if ((!googlePlaceList.contains(place)) && (time <= duration + 5) && (time > duration)) {
                             println("ENTROU")
                             googlePlaceList.add(place)
                             addMarker(place, time)
                         }
 
-                }
-            }else {
-                mGoogleMap?.clear()
-                googlePlaceList.clear()
+                    }
+                } else {
+                    mGoogleMap?.clear()
+                    googlePlaceList.clear()
 
+                }
+            } catch (e: ApiException) {
+                e.printStackTrace()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            } catch (e: InterruptedException) {
+                e.printStackTrace()
+            } finally {
+                println("AQUI3  " + googlePlaceList)
             }
-        } catch (e: ApiException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: InterruptedException) {
-            e.printStackTrace()
-        } finally {
-            println("AQUI3  " + googlePlaceList)
         }
 
     }
@@ -315,7 +319,8 @@ class Map: AppCompatActivity(), OnMapReadyCallback {
         println("KM " + (result[0]*0.001))
         val time = result[0] / 1.333 //AVERAGE SPEED WALKING PER PERSON BY GOOGLE
         val minutes = ((time % 86400 ) % 3600 ) / 60
-        return minutes.toInt()
+        return minutes.toInt()*2 //COMO A FUNCAO DISTANCEBETWEEN CALCULA A DISTANCIA EM LINHA E NAO POR ROTA,
+    // *2 PARA COMPENSAR EM COMPARACAO COM TEMPOS OFICIAIS DA GOOGLE
     }
 
     private fun addMarker(googlePlaceModel: GooglePlace, time:Int) {
