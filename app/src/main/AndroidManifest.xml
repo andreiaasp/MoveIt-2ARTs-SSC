@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.ipleiria.moveit">
-
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -17,13 +17,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MoveIt">
+        <activity
+            android:name=".posedetector.LivePreviewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.PoseDetection"
+            android:exported="false" />
         <activity android:name=".activity.MainApp" />
         <activity android:name=".activity.ForgetPassword" />
-        <activity android:name=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:exported="true">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -31,10 +39,8 @@
         <activity android:name=".activity.Map" />
         <activity
             android:name=".activity.Login"
-            android:exported="true">
-
-        </activity>
-        <activity android:name=".posedetector.helpers.MLTextHelperActivity" />
+            android:exported="true" />
+        <activity android:name=".posedetector.helpers.MLVideoHelperActivity" />
 
         <uses-library
             android:name="com.google.android.maps"

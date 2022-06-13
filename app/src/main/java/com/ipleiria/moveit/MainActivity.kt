@@ -19,10 +19,13 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.ipleiria.moveit.activity.Login
+import com.ipleiria.moveit.activity.PoseDetection
 import com.ipleiria.moveit.databinding.ActivityMainBinding
 import com.ipleiria.moveit.databinding.NavDrawerBinding
 import com.ipleiria.moveit.databinding.ToolbarBinding
 import com.ipleiria.moveit.models.User
+import com.ipleiria.moveit.posedetector.LivePreviewActivity
+import com.ipleiria.moveit.posedetector.helpers.MLVideoHelperActivity
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -81,7 +84,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Toast.makeText(this, "Prescriptions clicked", Toast.LENGTH_SHORT).show()
             }
             R.id.btnPoseDetection -> {
-                Toast.makeText(this, "PoseDetection clicked", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, LivePreviewActivity::class.java))
+                //Toast.makeText(this, "PoseDetection clicked", Toast.LENGTH_SHORT).show()
             }
             R.id.btnSetting -> {
                 Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show()

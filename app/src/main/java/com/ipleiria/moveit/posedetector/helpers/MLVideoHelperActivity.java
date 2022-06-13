@@ -30,10 +30,10 @@ public abstract class MLVideoHelperActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_video_helper);
-//
-//        preview = findViewById(R.id.camera_source_preview);
-//        graphicOverlay = findViewById(R.id.graphic_overlay);
+        setContentView(R.layout.activity_video_helper);
+
+        preview = findViewById(R.id.camera_source_preview);
+        graphicOverlay = findViewById(R.id.graphic_overlay);
 
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
