@@ -1,13 +1,13 @@
 package com.ipleiria.moveit
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
@@ -18,10 +18,10 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.ipleiria.moveit.activity.Login
 import com.ipleiria.moveit.databinding.ActivityMainBinding
 import com.ipleiria.moveit.databinding.NavDrawerBinding
 import com.ipleiria.moveit.databinding.ToolbarBinding
-import com.ipleiria.moveit.fragments.PrescriptionFragment
 import com.ipleiria.moveit.models.User
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -37,6 +37,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        isUserAuthenticated();
+
+
+
         navDrawerBinding = NavDrawerBinding.inflate(layoutInflater)
         setContentView(navDrawerBinding.root)
         mainBinding = navDrawerBinding.content
@@ -62,6 +66,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         getUserData()
 
     }
+    private fun isUserAuthenticated(){
+        val pref = applicationContext
+            .getSharedPreferences("MyPref", 0)
+        println(pref.getString("email", null) )
+
+        if(pref.getString("email", null) == null){
+            startActivity(Intent(this, Login::class.java))
+        }
+    }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
@@ -74,10 +87,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.btnSetting -> {
                 Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show()
             }
+            R.id.btnLogout -> {
+                Logout()
+            }
         }
         drLayout.closeDrawer(GravityCompat.START)
         return true
     }
+
+     private fun Logout(){
+         val pref = applicationContext
+             .getSharedPreferences("MyPref", 0)
+         pref.edit().remove("email").apply();
+         startActivity(Intent(this, Login::class.java))
+     }
 
     private fun getUserData() {
         val database = Firebase.database.getReference("Users").child(firebaseAuth.uid!!)

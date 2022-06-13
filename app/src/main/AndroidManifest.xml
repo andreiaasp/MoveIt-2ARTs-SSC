@@ -20,16 +20,19 @@
         <activity android:name=".activity.MainApp" />
         <activity android:name=".activity.ForgetPassword" />
         <activity android:name=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".activity.Register" />
-        <activity android:name=".activity.Map" />
-        <activity
-            android:name=".activity.Login"
+            android:theme="@style/AppTheme.NoActionBar"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".activity.Register" />
+        <activity android:name=".activity.Map" />
+        <activity
+            android:name=".activity.Login"
+            android:exported="true">
+
         </activity>
 
         <uses-library
