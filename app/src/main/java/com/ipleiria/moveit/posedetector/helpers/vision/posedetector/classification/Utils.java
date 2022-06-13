@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-package com.ipleiria.moveit.posedetector.classification;
-
-
-import static com.google.firebase.crashlytics.buildtools.reloc.com.google.common.primitives.Floats.max;
+package com.ipleiria.moveit.posedetector.helpers.vision.posedetector.classification;
 
 import com.google.mlkit.vision.common.PointF3D;
 
@@ -57,7 +54,7 @@ public class Utils {
   }
 
   public static float maxAbs(PointF3D point) {
-    return max(Math.abs(point.getX()), Math.abs(point.getY()), Math.abs(point.getZ()));
+    return Math.max(Math.abs(point.getX()), Math.max(Math.abs(point.getY()), Math.abs(point.getZ())));
   }
 
   public static float sumAbs(PointF3D point) {

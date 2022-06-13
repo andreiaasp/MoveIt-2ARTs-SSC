@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package com.ipleiria.moveit.posedetector.classification;
-
-import static com.ipleiria.moveit.posedetector.classification.Utils.average;
-import static com.ipleiria.moveit.posedetector.classification.Utils.l2Norm2D;
-import static com.ipleiria.moveit.posedetector.classification.Utils.multiplyAll;
-import static com.ipleiria.moveit.posedetector.classification.Utils.subtract;
-import static com.ipleiria.moveit.posedetector.classification.Utils.subtractAll;
+package com.ipleiria.moveit.posedetector.helpers.vision.posedetector.classification;
+import static com.ipleiria.moveit.posedetector.helpers.vision.posedetector.classification.Utils.average;
+import static com.ipleiria.moveit.posedetector.helpers.vision.posedetector.classification.Utils.l2Norm2D;
+import static com.ipleiria.moveit.posedetector.helpers.vision.posedetector.classification.Utils.multiplyAll;
+import static com.ipleiria.moveit.posedetector.helpers.vision.posedetector.classification.Utils.subtract;
+import static com.ipleiria.moveit.posedetector.helpers.vision.posedetector.classification.Utils.subtractAll;
 
 import com.google.mlkit.vision.common.PointF3D;
 import com.google.mlkit.vision.pose.PoseLandmark;

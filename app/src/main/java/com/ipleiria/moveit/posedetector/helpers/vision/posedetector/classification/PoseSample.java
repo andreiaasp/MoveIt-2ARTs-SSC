@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ipleiria.moveit.posedetector.classification;
+package com.ipleiria.moveit.posedetector.helpers.vision.posedetector.classification;
 
 import android.util.Log;
 

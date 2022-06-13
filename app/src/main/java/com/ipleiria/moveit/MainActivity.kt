@@ -1,7 +1,7 @@
 package com.ipleiria.moveit
 
+
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.TextView
@@ -24,6 +24,7 @@ import com.ipleiria.moveit.databinding.NavDrawerBinding
 import com.ipleiria.moveit.databinding.ToolbarBinding
 import com.ipleiria.moveit.models.User
 
+
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var navDrawerBinding: NavDrawerBinding
@@ -38,8 +39,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isUserAuthenticated();
-
-
 
         navDrawerBinding = NavDrawerBinding.inflate(layoutInflater)
         setContentView(navDrawerBinding.root)

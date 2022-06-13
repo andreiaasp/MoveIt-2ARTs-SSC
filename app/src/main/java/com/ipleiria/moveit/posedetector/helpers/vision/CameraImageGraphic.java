@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ipleiria.moveit.utils;
+package com.ipleiria.moveit.posedetector.helpers.vision;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

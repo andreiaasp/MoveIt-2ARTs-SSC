@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package com.ipleiria.moveit.utils;
+package com.ipleiria.moveit.posedetector.helpers.vision;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.util.AttributeSet;
 import android.view.View;
-
-import com.google.android.gms.common.internal.Preconditions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -177,8 +175,6 @@ public class GraphicOverlay extends View {
    *     front camera.
    */
   public void setImageSourceInfo(int imageWidth, int imageHeight, boolean isFlipped) {
-    Preconditions.checkState(imageWidth > 0, "image width must be positive");
-    Preconditions.checkState(imageHeight > 0, "image height must be positive");
     synchronized (lock) {
       this.imageWidth = imageWidth;
       this.imageHeight = imageHeight;

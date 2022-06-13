@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ipleiria.moveit.posedetector.classification;
+package com.ipleiria.moveit.posedetector.helpers.vision.posedetector.classification;
 
 import static java.util.Collections.max;
 
@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Represents Pose classification result as outputted by {@link com.google.mlkit.vision.demo.java.posedetector.classification.PoseClassifier}. Can be manipulated.
+ * Represents Pose classification result as outputted by {@link PoseClassifier}. Can be manipulated.
  */
 public class ClassificationResult {
   // For an entry in this map, the key is the class name, and the value is how many times this class

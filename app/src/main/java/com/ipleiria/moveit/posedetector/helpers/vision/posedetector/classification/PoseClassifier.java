@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package com.ipleiria.moveit.posedetector.classification;
+package com.ipleiria.moveit.posedetector.helpers.vision.posedetector.classification;
 
-import static com.ipleiria.moveit.posedetector.classification.PoseEmbedding.getPoseEmbedding;
-import static com.ipleiria.moveit.posedetector.classification.Utils.maxAbs;
-import static com.ipleiria.moveit.posedetector.classification.Utils.multiply;
-import static com.ipleiria.moveit.posedetector.classification.Utils.multiplyAll;
-import static com.ipleiria.moveit.posedetector.classification.Utils.subtract;
-import static com.ipleiria.moveit.posedetector.classification.Utils.sumAbs;
-import static java.lang.Float.max;
+import static com.ipleiria.moveit.posedetector.helpers.vision.posedetector.classification.PoseEmbedding.getPoseEmbedding;
+import static com.ipleiria.moveit.posedetector.helpers.vision.posedetector.classification.Utils.maxAbs;
+import static com.ipleiria.moveit.posedetector.helpers.vision.posedetector.classification.Utils.multiply;
+import static com.ipleiria.moveit.posedetector.helpers.vision.posedetector.classification.Utils.multiplyAll;
+import static com.ipleiria.moveit.posedetector.helpers.vision.posedetector.classification.Utils.subtract;
+import static com.ipleiria.moveit.posedetector.helpers.vision.posedetector.classification.Utils.sumAbs;
+import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 import android.util.Pair;
@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 /**
- * Classifies {link Pose} based on given {@link com.ipleiria.moveit.posedetector.classification.PoseSample}s.
+ * Classifies {link Pose} based on given {@link PoseSample}s.
  *
  * <p>Inspired by K-Nearest Neighbors Algorithm with outlier filtering.
  * https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm
@@ -48,17 +48,17 @@ public class PoseClassifier {
   // Note Z has a lower weight as it is generally less accurate than X & Y.
   private static final PointF3D AXES_WEIGHTS = PointF3D.from(1, 1, 0.2f);
 
-  private final List<com.ipleiria.moveit.posedetector.classification.PoseSample> poseSamples;
+  private final List<PoseSample> poseSamples;
   private final int maxDistanceTopK;
   private final int meanDistanceTopK;
   private final PointF3D axesWeights;
 
-  public PoseClassifier(List<com.ipleiria.moveit.posedetector.classification.PoseSample> poseSamples) {
+  public PoseClassifier(List<PoseSample> poseSamples) {
     this(poseSamples, MAX_DISTANCE_TOP_K, MEAN_DISTANCE_TOP_K, AXES_WEIGHTS);
   }
 
-  public PoseClassifier(List<com.ipleiria.moveit.posedetector.classification.PoseSample> poseSamples, int maxDistanceTopK,
-                        int meanDistanceTopK, PointF3D axesWeights) {
+  public PoseClassifier(List<PoseSample> poseSamples, int maxDistanceTopK,
+      int meanDistanceTopK, PointF3D axesWeights) {
     this.poseSamples = poseSamples;
     this.maxDistanceTopK = maxDistanceTopK;
     this.meanDistanceTopK = meanDistanceTopK;
@@ -76,7 +76,7 @@ public class PoseClassifier {
   /**
    * Returns the max range of confidence values.
    *
-   * <p><Since we calculate confidence by counting {@link com.ipleiria.moveit.posedetector.classification.PoseSample}s that survived
+   * <p><Since we calculate confidence by counting {@link PoseSample}s that survived
    * outlier-filtering by maxDistanceTopK and meanDistanceTopK, this range is the minimum of two.
    */
   public int confidenceRange() {
@@ -109,10 +109,10 @@ public class PoseClassifier {
     //    that are closest by average.
 
     // Keeps max distance on top so we can pop it when top_k size is reached.
-    PriorityQueue<Pair<com.ipleiria.moveit.posedetector.classification.PoseSample, Float>> maxDistances = new PriorityQueue<>(
+    PriorityQueue<Pair<PoseSample, Float>> maxDistances = new PriorityQueue<>(
         maxDistanceTopK, (o1, o2) -> -Float.compare(o1.second, o2.second));
     // Retrieve top K poseSamples by least distance to remove outliers.
-    for (com.ipleiria.moveit.posedetector.classification.PoseSample poseSample : poseSamples) {
+    for (PoseSample poseSample : poseSamples) {
       List<PointF3D> sampleEmbedding = poseSample.getEmbedding();
 
       float originalMax = 0;
@@ -138,11 +138,11 @@ public class PoseClassifier {
     }
 
     // Keeps higher mean distances on top so we can pop it when top_k size is reached.
-    PriorityQueue<Pair<com.ipleiria.moveit.posedetector.classification.PoseSample, Float>> meanDistances = new PriorityQueue<>(
+    PriorityQueue<Pair<PoseSample, Float>> meanDistances = new PriorityQueue<>(
         meanDistanceTopK, (o1, o2) -> -Float.compare(o1.second, o2.second));
     // Retrive top K poseSamples by least mean distance to remove outliers.
-    for (Pair<com.ipleiria.moveit.posedetector.classification.PoseSample, Float> sampleDistances : maxDistances) {
-      com.ipleiria.moveit.posedetector.classification.PoseSample poseSample = sampleDistances.first;
+    for (Pair<PoseSample, Float> sampleDistances : maxDistances) {
+      PoseSample poseSample = sampleDistances.first;
       List<PointF3D> sampleEmbedding = poseSample.getEmbedding();
 
       float originalSum = 0;
@@ -162,7 +162,7 @@ public class PoseClassifier {
       }
     }
 
-    for (Pair<com.ipleiria.moveit.posedetector.classification.PoseSample, Float> sampleDistances : meanDistances) {
+    for (Pair<PoseSample, Float> sampleDistances : meanDistances) {
       String className = sampleDistances.first.getClassName();
       result.incrementClassConfidence(className);
     }
