@@ -93,7 +93,7 @@ class PrescriptionFragment : Fragment() {
                                 Toast.LENGTH_SHORT
                             ).show()
                             val intent = Intent(getActivity(),Map::class.java)
-                            intent.putExtra("duration",prescriptionList[position].duration)
+                            intent.putExtra("duration",prescriptionList[position].duration.toInt())
                             startActivity(intent)
 
                         }

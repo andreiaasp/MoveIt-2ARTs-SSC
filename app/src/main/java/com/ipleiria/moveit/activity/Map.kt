@@ -31,20 +31,18 @@ import com.google.firebase.ktx.Firebase
 import com.google.maps.GeoApiContext
 import com.google.maps.PlacesApi
 import com.google.maps.model.PlaceType
-import com.google.maps.model.PlacesSearchResponse
 import com.ipleiria.moveit.R
 import com.ipleiria.moveit.constants.ProjectConstant
 import com.ipleiria.moveit.databinding.MapViewBinding
 import com.ipleiria.moveit.models.GooglePlace
-import com.ipleiria.moveit.models.PhotoGooglePlace
 import java.io.IOException
-import java.net.URL
 
 
 class Map: AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mapBinding: MapViewBinding
     private lateinit var googlePlaceList: ArrayList<GooglePlace>
+    private lateinit var googlePlaceListTime: ArrayList<GooglePlace>
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
     private var isLocationPermissionOk = false
@@ -52,7 +50,7 @@ class Map: AppCompatActivity(), OnMapReadyCallback {
     private var mGoogleMap: GoogleMap? = null
     private var permissionToRequest = mutableListOf<String>()
     private lateinit var currentLocation: Location
-    private lateinit var duration: Number
+    private var duration: Int = 0
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
     private var fusedLocationProviderClient: FusedLocationProviderClient? = null
@@ -65,9 +63,11 @@ class Map: AppCompatActivity(), OnMapReadyCallback {
         setContentView(mapBinding.root)
 
         val bundle :Bundle? = intent.extras
+        duration = bundle!!.getInt("duration")
 
         firebaseAuth = Firebase.auth
         googlePlaceList = ArrayList()
+        googlePlaceListTime = ArrayList()
 
         permissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
@@ -246,17 +246,22 @@ class Map: AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun getNearByPlace(placeType: String) {
-
-        var request = PlacesSearchResponse()
+        var type : PlaceType? = null
+        for (i in PlaceType.values()){
+            if(i.name.equals(placeType)){
+                println("NAME 2" +i)
+                type = i
+            }
+        }
         val context: GeoApiContext = GeoApiContext.Builder()
             .apiKey("AIzaSyB0z8IJvOz5S_uEAF6EldQbJ88GJzGO1QI")
             .build()
         val location = LatLng(currentLocation.latitude, currentLocation.longitude)
 
         try {
-            request = PlacesApi.nearbySearchQuery(context, convertCoordType(location))
+            var request = PlacesApi.nearbySearchQuery(context, convertCoordType(location))
                 .radius(2000)
-                .type(placeType as PlaceType)
+                .type(type)
                 .await()
 
             if (request.results != null && request.results.size > 0) {
@@ -264,23 +269,27 @@ class Map: AppCompatActivity(), OnMapReadyCallback {
                 mGoogleMap?.clear()
 
                 for (r in request.results) {
-                    for (i in request.results.indices){
                         val details = PlacesApi.placeDetails(context, r.placeId).await()
                         val name = details.name
-                        val icon: URL = details.icon
+                        //val icon: URL = details.icon
                         val lat = details.geometry.location.lat
                         val lng = details.geometry.location.lng
-                        val photos = details.photos as List<PhotoGooglePlace>
+                        //val photos = details.photos as Photo
                         val vicinity = details.vicinity
                         val placeId = details.placeId
                         val rating = details.rating
-                        val scope = details.scope.toString()
-                        val types = details.types as List<String>
-
-                        val place = GooglePlace(lat,lng,icon.toString(),name,photos, placeId,rating,scope,types,vicinity)
-                        googlePlaceList.add(place)
-                        addMarker(place, i)
-                    }
+                        //val types = details.types as Array<AddressType>
+                        val place = GooglePlace(lat,lng,name, placeId,rating,vicinity)
+                        val time = getDistance(place.lat,place.lng)
+                            println(place.name)
+                            println("TIME "+ time)
+                    var boolean = time <= duration +5
+                    var boolean1 = time > duration
+                        if((!googlePlaceList.contains(place)) && (time <= duration +5) && (time > duration) ){
+                            println("ENTROU")
+                            googlePlaceList.add(place)
+                            addMarker(place, time)
+                        }
 
                 }
             }else {
@@ -295,12 +304,21 @@ class Map: AppCompatActivity(), OnMapReadyCallback {
         } catch (e: InterruptedException) {
             e.printStackTrace()
         } finally {
-            Log.d("TAG", googlePlaceList.toString())
+            println("AQUI3  " + googlePlaceList)
         }
 
     }
 
-    private fun addMarker(googlePlaceModel: GooglePlace, position: Int) {
+    private fun getDistance(lat: Double, lg: Double): Int{
+        val result = FloatArray(1)
+        Location.distanceBetween(currentLocation.latitude, currentLocation.longitude,lat,lg,result)
+        println("KM " + (result[0]*0.001))
+        val time = result[0] / 1.333 //AVERAGE SPEED WALKING PER PERSON BY GOOGLE
+        val minutes = ((time % 86400 ) % 3600 ) / 60
+        return minutes.toInt()
+    }
+
+    private fun addMarker(googlePlaceModel: GooglePlace, time:Int) {
         val markerOptions = MarkerOptions()
             .position(
                 LatLng(
@@ -310,9 +328,10 @@ class Map: AppCompatActivity(), OnMapReadyCallback {
             )
             .title(googlePlaceModel.name)
             .snippet(googlePlaceModel.vicinity)
+            .snippet("Time: " + time.toString() + " min")
 
         //markerOptions.icon(getCustomIcon())
-        mGoogleMap?.addMarker(markerOptions)?.tag = position
+        mGoogleMap?.addMarker(markerOptions)
 
     }
 
