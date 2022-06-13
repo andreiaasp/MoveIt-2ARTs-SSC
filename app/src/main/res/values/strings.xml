@@ -55,6 +55,7 @@
 
     <string name="pref_key_info_hide" translatable="false">ih</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment">Não tem prescrições</string>
+    <string name="no_data_available">Não tem prescrições</string>
 
 </resources>
