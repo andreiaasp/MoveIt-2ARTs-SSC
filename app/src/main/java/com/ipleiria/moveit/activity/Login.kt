@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -23,6 +24,8 @@ class Login : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         binding = LoginBinding.inflate(layoutInflater)
         mainApp= MainApp()
+        var pb = binding.progressBar2;
+        pb.visibility = View.INVISIBLE;
 
         setContentView(binding.root)
 
@@ -36,17 +39,26 @@ class Login : AppCompatActivity(){
 
         binding.btnLogin.setOnClickListener {
             if (areFieldReady()) {
+                binding.progressBar2.visibility = View.VISIBLE;
+
                 auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                     if(task.isSuccessful && auth.currentUser?.isEmailVerified!!){
                         Log.d("LOGIN","Login Success")
+                        binding.progressBar2.visibility = View.INVISIBLE;
+
                         val intent = Intent(this@Login, MainActivity::class.java)
                         startActivity(intent)
                     }
                 }.addOnFailureListener { _ ->
                     auth.currentUser?.sendEmailVerification()?.addOnCompleteListener { task ->
                         println("Email Sent")
+                        /*binding.progressBar2.visibility = View.INVISIBLE;
+                        Toast.makeText(applicationContext,"Invalid email or password" , Toast.LENGTH_LONG).show();
+*/
                     }?.addOnFailureListener { _ ->
                         println("Email Error")
+                        binding.progressBar2.visibility = View.INVISIBLE;
+                        Toast.makeText(applicationContext,"Invalid email or password" , Toast.LENGTH_LONG).show();
                     }
                 }
             }

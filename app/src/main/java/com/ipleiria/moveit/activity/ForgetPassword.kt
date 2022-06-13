@@ -2,7 +2,6 @@ package com.ipleiria.moveit.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.ipleiria.moveit.activity.MainApp
 import com.ipleiria.moveit.databinding.ForgetPasswordBinding
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -28,7 +27,7 @@ class ForgetPassword : AppCompatActivity(){
                 binding.email.requestFocus()
             } else {
                 GlobalScope.launch{
-                    mainApp.forgetPassword(email)
+                    mainApp.forgetPassword(email, applicationContext)
                 }
             }
         }

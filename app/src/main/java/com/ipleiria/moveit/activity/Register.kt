@@ -3,7 +3,6 @@ package com.ipleiria.moveit.activity
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.ipleiria.moveit.activity.MainApp
 import com.ipleiria.moveit.databinding.RegisterBinding
 
 class Register : AppCompatActivity() {
@@ -20,12 +19,14 @@ class Register : AppCompatActivity() {
         binding = RegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
         mainApp= MainApp()
-
+        var pb = binding.progressBar1;
+        pb.visibility = View.INVISIBLE;
         binding.btnBack.setOnClickListener { onBackPressed() }
         binding.txtLogin.setOnClickListener { onBackPressed() }
         binding.btnSignUp.setOnClickListener {
             if (areFieldReady()) {
-                mainApp.signUp(email, password, username)
+                binding.progressBar1.visibility = View.VISIBLE;
+                mainApp.signUp(email, password, username,pb, applicationContext )
             }
         }
 

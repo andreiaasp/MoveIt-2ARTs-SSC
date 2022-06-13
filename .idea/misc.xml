@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../../../layout/custom_preview.xml" value="0.1" />
         <entry key="..\:/Users/2210627/Desktop/Mestrado/SSC/MoveIt/app/src/main/res/layout/activity_main.xml" value="0.22826086956521738" />
         <entry key="..\:/Users/2210627/Desktop/Mestrado/SSC/MoveIt/app/src/main/res/layout/content_main.xml" value="0.22826086956521738" />
         <entry key="..\:/Users/2210627/Desktop/Mestrado/SSC/MoveIt/app/src/main/res/layout/fragment_map.xml" value="0.12604166666666666" />
@@ -29,6 +30,18 @@
         <entry key="..\:/Users/2210627/Desktop/Mestrado/SSC/app/src/main/res/layout/register.xml" value="0.22826086956521738" />
         <entry key="..\:/Users/2210627/Desktop/Mestrado/SSC/app/src/main/res/layout/toolbar.xml" value="0.22826086956521738" />
         <entry key="..\:/Users/2210627/Desktop/Mestrado/SSC/app/src/main/res/menu/main.xml" value="0.2359375" />
+        <entry key="app/src/main/res/drawable-v24/logout-48px.xml" value="0.145" />
+        <entry key="app/src/main/res/drawable/back_arrow.xml" value="0.145" />
+        <entry key="app/src/main/res/drawable/gas_station.xml" value="0.145" />
+        <entry key="app/src/main/res/drawable/settings.xml" value="0.145" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.13489583333333333" />
+        <entry key="app/src/main/res/layout/forget_password.xml" value="0.2864583333333333" />
+        <entry key="app/src/main/res/layout/fragment_prescriptions.xml" value="0.13489583333333333" />
+        <entry key="app/src/main/res/layout/login.xml" value="0.13489583333333333" />
+        <entry key="app/src/main/res/layout/nav_drawer.xml" value="0.13489583333333333" />
+        <entry key="app/src/main/res/layout/register.xml" value="0.1961090087890625" />
+        <entry key="app/src/main/res/menu/main.xml" value="0.13489583333333333" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.145" />
       </map>
     </option>
   </component>
