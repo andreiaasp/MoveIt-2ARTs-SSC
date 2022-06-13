@@ -68,6 +68,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.btnPrescriptions -> {
                 Toast.makeText(this, "Prescriptions clicked", Toast.LENGTH_SHORT).show()
             }
+            R.id.btnPoseDetection -> {
+                Toast.makeText(this, "PoseDetection clicked", Toast.LENGTH_SHORT).show()
+            }
             R.id.btnSetting -> {
                 Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show()
             }
