@@ -4,17 +4,20 @@ import android.app.AlertDialog
 import android.content.ContentValues.TAG
 import android.content.pm.PackageManager
 import android.location.Location
-import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.res.ResourcesCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -22,6 +25,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
@@ -32,6 +36,8 @@ import com.google.maps.GeoApiContext
 import com.google.maps.PlacesApi
 import com.google.maps.model.PlaceType
 import com.ipleiria.moveit.R
+import com.ipleiria.moveit.adapters.GooglePlaceAdapter
+import com.ipleiria.moveit.adapters.PrescriptionAdapter
 import com.ipleiria.moveit.constants.ProjectConstant
 import com.ipleiria.moveit.databinding.MapViewBinding
 import com.ipleiria.moveit.models.GooglePlace
@@ -41,7 +47,7 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 
 
-class Map: AppCompatActivity(), OnMapReadyCallback {
+class Map: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private lateinit var mapBinding: MapViewBinding
     private lateinit var googlePlaceList: ArrayList<GooglePlace>
@@ -55,10 +61,10 @@ class Map: AppCompatActivity(), OnMapReadyCallback {
     private lateinit var currentLocation: Location
     private var duration: Int = 0
     private lateinit var locationRequest: LocationRequest
+    private lateinit var googlePlaceAdapter: GooglePlaceAdapter
     private lateinit var locationCallback: LocationCallback
     private var fusedLocationProviderClient: FusedLocationProviderClient? = null
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mapBinding = MapViewBinding.inflate(layoutInflater)
@@ -109,7 +115,7 @@ class Map: AppCompatActivity(), OnMapReadyCallback {
                 getNearByPlace(place.placeType)
             }
         }
-        //TODO setUpRecyclerView()
+        setUpRecyclerView()
 
     }
 
@@ -308,6 +314,8 @@ class Map: AppCompatActivity(), OnMapReadyCallback {
                 e.printStackTrace()
             } finally {
                 println("AQUI3  " + googlePlaceList)
+                var adapter = GooglePlaceAdapter(googlePlaceList)
+                mapBinding.placesRecyclerView.adapter = adapter
             }
         }
 
@@ -341,8 +349,47 @@ class Map: AppCompatActivity(), OnMapReadyCallback {
     }
 
     fun convertCoordType(list: LatLng): com.google.maps.model.LatLng? {
+
         val result = com.google.maps.model.LatLng(list.latitude, list.longitude)
         return result
+    }
+
+    private fun setUpRecyclerView() {
+        val snapHelper: SnapHelper = PagerSnapHelper()
+        googlePlaceAdapter = GooglePlaceAdapter(googlePlaceList)
+        mapBinding.placesRecyclerView.layoutManager = LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
+        mapBinding.placesRecyclerView.setHasFixedSize(false)
+        mapBinding.placesRecyclerView.adapter = googlePlaceAdapter
+
+        mapBinding.placesRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val linearManager = recyclerView.layoutManager as LinearLayoutManager
+                val position = linearManager.findFirstCompletelyVisibleItemPosition()
+                if (position > -1) {
+                    val googlePlaceModel: GooglePlace = googlePlaceList[position]
+                    println("GOOGLE PLACE " + googlePlaceModel)
+                    mGoogleMap?.animateCamera(
+                        CameraUpdateFactory.newLatLngZoom(
+                            LatLng(
+                                googlePlaceModel.lat,
+                                googlePlaceModel.lng
+                            ), 20f
+                        )
+                    )
+                }
+            }
+        })
+        snapHelper.attachToRecyclerView(mapBinding.placesRecyclerView)
+        }
+
+
+    override fun onMarkerClick(marker: Marker): Boolean {
+        val markerTag = marker.tag as Int
+        Log.d("TAG", "onMarkerClick: $markerTag")
+        mapBinding.placesRecyclerView.scrollToPosition(markerTag)
+        return false
     }
 
 
