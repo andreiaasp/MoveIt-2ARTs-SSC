@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ipleiria.moveit.posedetector.classification;
+package com.ipleiria.moveit.posedetector.helpers.vision.posedetector.classification;
 
 import android.os.SystemClock;
 
@@ -36,7 +36,7 @@ public class EMASmoothing {
   private final float alpha;
   // This is a window of {@link ClassificationResult}s as outputted by the {@link PoseClassifier}.
   // We run smoothing over this window of size {@link windowSize}.
-  private final Deque<com.ipleiria.moveit.posedetector.classification.ClassificationResult> window;
+  private final Deque<ClassificationResult> window;
 
   private long lastInputMs;
 
@@ -50,7 +50,7 @@ public class EMASmoothing {
     this.window = new LinkedBlockingDeque<>(windowSize);
   }
 
-  public com.ipleiria.moveit.posedetector.classification.ClassificationResult getSmoothedResult(com.ipleiria.moveit.posedetector.classification.ClassificationResult classificationResult) {
+  public ClassificationResult getSmoothedResult(ClassificationResult classificationResult) {
     // Resets memory if the input is too far away from the previous one in time.
     long nowMs = SystemClock.elapsedRealtime();
     if (nowMs - lastInputMs > RESET_THRESHOLD_MS) {
@@ -66,17 +66,17 @@ public class EMASmoothing {
     window.addFirst(classificationResult);
 
     Set<String> allClasses = new HashSet<>();
-    for (com.ipleiria.moveit.posedetector.classification.ClassificationResult result : window) {
+    for (ClassificationResult result : window) {
       allClasses.addAll(result.getAllClasses());
     }
 
-    com.ipleiria.moveit.posedetector.classification.ClassificationResult smoothedResult = new com.ipleiria.moveit.posedetector.classification.ClassificationResult();
+    ClassificationResult smoothedResult = new ClassificationResult();
 
     for (String className : allClasses) {
       float factor = 1;
       float topSum = 0;
       float bottomSum = 0;
-      for (com.ipleiria.moveit.posedetector.classification.ClassificationResult result : window) {
+      for (ClassificationResult result : window) {
         float value = result.getClassConfidence(className);
 
         topSum += factor * value;

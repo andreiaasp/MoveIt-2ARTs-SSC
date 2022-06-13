@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package com.ipleiria.moveit.utils;
+package com.ipleiria.moveit.posedetector.helpers.vision;
 
 import androidx.annotation.NonNull;
+
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 

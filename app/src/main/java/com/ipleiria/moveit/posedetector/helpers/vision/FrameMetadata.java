@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ipleiria.moveit.utils;
+package com.ipleiria.moveit.posedetector.helpers.vision;
 
 /** Describing a frame info. */
 public class FrameMetadata {

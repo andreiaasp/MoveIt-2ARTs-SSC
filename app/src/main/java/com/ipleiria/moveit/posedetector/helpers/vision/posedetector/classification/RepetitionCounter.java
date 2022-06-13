@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ipleiria.moveit.posedetector.classification;
+package com.ipleiria.moveit.posedetector.helpers.vision.posedetector.classification;
 
 /**
  * Counts reps for the give class.
@@ -50,7 +50,7 @@ public class RepetitionCounter {
    * @param classificationResult {link ClassificationResult} of class to confidence values.
    * @return number of reps.
    */
-  public int addClassificationResult(com.ipleiria.moveit.posedetector.classification.ClassificationResult classificationResult) {
+  public int addClassificationResult(ClassificationResult classificationResult) {
     float poseConfidence = classificationResult.getClassConfidence(className);
 
     if (!poseEntered) {

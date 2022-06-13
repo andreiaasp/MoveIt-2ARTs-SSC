@@ -34,6 +34,7 @@
             android:exported="true">
 
         </activity>
+        <activity android:name=".posedetector.helpers.MLTextHelperActivity" />
 
         <uses-library
             android:name="com.google.android.maps"

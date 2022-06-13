@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ipleiria.moveit.utils;
+package com.ipleiria.moveit.posedetector.helpers.vision;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -24,14 +24,16 @@ import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
-import androidx.annotation.Nullable;
 import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.WindowManager;
+
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 
 import com.google.android.gms.common.images.Size;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -256,14 +258,10 @@ public class CameraSource {
     }
     Camera camera = Camera.open(requestedCameraId);
 
-    SizePair sizePair = PreferenceUtils.getCameraPreviewSizePair(activity, requestedCameraId);
-    if (sizePair == null) {
-      sizePair =
-          selectSizePair(
+    SizePair sizePair = selectSizePair(
               camera,
               DEFAULT_REQUESTED_CAMERA_PREVIEW_WIDTH,
               DEFAULT_REQUESTED_CAMERA_PREVIEW_HEIGHT);
-    }
 
     if (sizePair == null) {
       throw new IOException("Could not find suitable preview size.");
@@ -488,16 +486,16 @@ public class CameraSource {
     int rotation = windowManager.getDefaultDisplay().getRotation();
     switch (rotation) {
       case Surface.ROTATION_0:
-        degrees = 0;
-        break;
-      case Surface.ROTATION_90:
         degrees = 90;
         break;
-      case Surface.ROTATION_180:
+      case Surface.ROTATION_90:
         degrees = 180;
         break;
-      case Surface.ROTATION_270:
+      case Surface.ROTATION_180:
         degrees = 270;
+        break;
+      case Surface.ROTATION_270:
+        degrees = 0;
         break;
       default:
         Log.e(TAG, "Bad rotation value: " + rotation);

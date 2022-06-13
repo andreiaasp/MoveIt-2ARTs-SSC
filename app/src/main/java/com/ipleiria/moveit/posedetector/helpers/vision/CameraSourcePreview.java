@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ipleiria.moveit.utils;
+package com.ipleiria.moveit.posedetector.helpers.vision;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -23,7 +23,9 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
+
 import com.google.android.gms.common.images.Size;
+
 import java.io.IOException;
 
 /** Preview the camera image in the screen. */
@@ -79,11 +81,8 @@ public class CameraSourcePreview extends ViewGroup {
 
   private void startIfReady() throws IOException, SecurityException {
     if (startRequested && surfaceAvailable) {
-      if (PreferenceUtils.isCameraLiveViewportEnabled(context)) {
-        cameraSource.start(surfaceView.getHolder());
-      } else {
-        cameraSource.start();
-      }
+      cameraSource.start();
+
       requestLayout();
 
       if (overlay != null) {
