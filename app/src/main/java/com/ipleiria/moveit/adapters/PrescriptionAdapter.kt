@@ -23,6 +23,7 @@ class PrescriptionAdapter(val prescriptionList:ArrayList<Prescription>):Recycler
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PrescriptionViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val v  = inflater.inflate(R.layout.item_prescription,parent,false)
+
         return PrescriptionViewHolder(v,mlistener)
     }
 
@@ -53,4 +54,5 @@ class PrescriptionAdapter(val prescriptionList:ArrayList<Prescription>):Recycler
         mMenus.setOnClickListener { popupMenus(it) }*/
 
     }
+
 }

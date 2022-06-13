@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -36,6 +37,9 @@ class PrescriptionFragment : Fragment() {
     private lateinit var prescriptionList:ArrayList<Prescription>
     private lateinit var prescriptionAdapter: PrescriptionAdapter
     private lateinit var auth: FirebaseAuth
+    private lateinit var empv: TextView
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +49,7 @@ class PrescriptionFragment : Fragment() {
         prescriptionList = ArrayList()
         addsBtn = prescriptionBinding.addingBtn
         recv = prescriptionBinding.mRecycler
+        empv = prescriptionBinding.emptyView
         auth = Firebase.auth
 
         prescriptionAdapter = PrescriptionAdapter(prescriptionList)
@@ -71,6 +76,7 @@ class PrescriptionFragment : Fragment() {
     private fun getPrescriptionsFirebase() {
 
         var ref = Firebase.database.getReference("Users").child(auth.uid!!).child("Prescriptions")
+        println("AQUIIIIIIIIII")
 
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -83,33 +89,31 @@ class PrescriptionFragment : Fragment() {
                         println(prescription)
                         prescriptionList.add(prescription!!)
                     }
-                    var adapter = PrescriptionAdapter(prescriptionList)
-                    prescriptionBinding.mRecycler.adapter = adapter
-                    adapter.setOnItemClickListener(object: PrescriptionAdapter.onItemClickListener{
-                        override fun onItemClick(position: Int) {
-                            Toast.makeText(
-                                requireContext(),
-                                "You clicked on item no. ${position}",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            val intent = Intent(getActivity(),Map::class.java)
-                            intent.putExtra("duration",prescriptionList[position].duration.toInt())
-                            startActivity(intent)
-
-                        }
-
-
-                    })
-                    println("AQUI " + prescriptionList)
+                        var adapter = PrescriptionAdapter(prescriptionList)
+                        prescriptionBinding.mRecycler.adapter = adapter
+                        adapter.setOnItemClickListener(object: PrescriptionAdapter.onItemClickListener{
+                            override fun onItemClick(position: Int) {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "You clicked on item no. ${position}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                val intent = Intent(getActivity(),Map::class.java)
+                                intent.putExtra("duration",prescriptionList[position].duration.toInt())
+                                startActivity(intent)
+                            }
+                        })
 
                     Toast.makeText(
                         requireContext(),
                         "${prescriptionList.size}",
                         Toast.LENGTH_SHORT
                     ).show()
+                }else{
+                    empv.visibility = View.VISIBLE;
+                    recv.visibility = View.INVISIBLE;
                 }
             }
-
 
             override fun onCancelled(error: DatabaseError) {
                 TODO("Not yet implemented")
