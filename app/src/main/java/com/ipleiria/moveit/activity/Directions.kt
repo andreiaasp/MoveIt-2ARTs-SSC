@@ -122,8 +122,8 @@ class Directions: AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun requestLocation() {
-        permissionToRequest.add(android.Manifest.permission.ACCESS_FINE_LOCATION)
-        permissionToRequest.add(android.Manifest.permission.ACCESS_COARSE_LOCATION)
+        permissionToRequest.add(Manifest.permission.ACCESS_FINE_LOCATION)
+        permissionToRequest.add(Manifest.permission.ACCESS_COARSE_LOCATION)
 
         permissionLauncher.launch(permissionToRequest.toTypedArray())
     }
@@ -135,7 +135,6 @@ class Directions: AppCompatActivity(), OnMapReadyCallback {
             val context: GeoApiContext = GeoApiContext.Builder()
                 .apiKey("AIzaSyB0z8IJvOz5S_uEAF6EldQbJ88GJzGO1QI")
                 .build()
-            val location = LatLng(currentLocation!!.latitude, currentLocation!!.longitude)
 
             CoroutineScope(Dispatchers.Main).launch {
                 try {
@@ -167,20 +166,7 @@ class Directions: AppCompatActivity(), OnMapReadyCallback {
                         }
 
                     }
-
-                   /* val directionResponseModel: DirectionResponseModel =
-                        it.data as DirectionResponseModel
-                    val routeModel: DirectionRouteModel =
-                        directionResponseModel.directionRouteModels!![0]*/
-
-
-                    /*supportActionBar!!.title = routeModel.summary
-                    val legModel: DirectionLegModel = routeModel.legs?.get(0)!!
-                    binding.apply {
-                        txtStartLocation.text = legModel.startAddress
-                        txtEndLocation.text = legModel.endAddress
-                    }
-*/
+                    val stepList: MutableList<LatLng> = ArrayList()
 
                     val options = PolylineOptions().apply {
                         width(25f)
@@ -197,6 +183,19 @@ class Directions: AppCompatActivity(), OnMapReadyCallback {
                     options.jointType(JointType.ROUND)
                     options.pattern(pattern)
 
+                    for (stepModel in legModel!!.steps) {
+                        val decodedList = stepModel.polyline.decodePath()
+                        for (latLng in decodedList) {
+                            stepList.add(
+                                LatLng(
+                                    latLng.lat,
+                                    latLng.lng
+                                )
+                            )
+                        }
+                    }
+                    options.addAll(stepList)
+                    println(options)
                     mGoogleMap?.addPolyline(options)
                     val startLocation = LatLng(
                         legModel!!.startLocation.lat,
@@ -243,6 +242,35 @@ class Directions: AppCompatActivity(), OnMapReadyCallback {
             }
 
         }
+    }
+
+    private fun decode(points: String): List<com.google.maps.model.LatLng> {
+        val len = points.length
+        val path: MutableList<com.google.maps.model.LatLng> = java.util.ArrayList(len / 2)
+        var index = 0
+        var lat = 0
+        var lng = 0
+        while (index < len) {
+            var result = 1
+            var shift = 0
+            var b: Int
+            do {
+                b = points[index++].toInt() - 63 - 1
+                result += b shl shift
+                shift += 5
+            } while (b >= 0x1f)
+            lat += if (result and 1 != 0) (result shr 1).inv() else result shr 1
+            result = 1
+            shift = 0
+            do {
+                b = points[index++].toInt() - 63 - 1
+                result += b shl shift
+                shift += 5
+            } while (b >= 0x1f)
+            lng += if (result and 1 != 0) (result shr 1).inv() else result shr 1
+            path.add(com.google.maps.model.LatLng(lat * 1e-5, lng * 1e-5))
+        }
+        return path
     }
 
 }

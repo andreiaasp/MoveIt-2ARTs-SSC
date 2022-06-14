@@ -43,6 +43,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_toEndOf="@+id/imgStartLocation"
+                    android:text="Origem"
                     android:textColor="@color/quantum_black_hint_text"
                     android:textStyle="bold" />
 
@@ -55,7 +56,6 @@
                     android:layout_marginTop="10dp"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="From"
                     android:textColor="@color/quantum_black_text"
                     android:textStyle="bold" />
 
@@ -85,8 +85,8 @@
                     android:layout_alignStart="@+id/view"
                     android:layout_marginTop="10dp"
                     android:layout_toEndOf="@+id/imgEndLocation"
-                    android:text="To"
-                    android:textColor="@color/quantum_black_text"
+                    android:text="Destino"
+                    android:textColor="@color/quantum_black_hint_text"
                     android:textStyle="bold" />
 
                 <TextView
