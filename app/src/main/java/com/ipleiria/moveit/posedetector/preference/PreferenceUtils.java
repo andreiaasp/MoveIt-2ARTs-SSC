@@ -27,17 +27,15 @@ import androidx.annotation.StringRes;
 import androidx.camera.core.CameraSelector;
 
 import com.google.android.gms.common.images.Size;
-import com.google.android.gms.common.internal.Preconditions;
+import com.google.common.base.Preconditions;
 import com.google.mlkit.common.model.LocalModel;
-import com.google.mlkit.vision.face.FaceDetectorOptions;
-import com.google.mlkit.vision.objects.ObjectDetectorOptionsBase.DetectorMode;
 import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions;
 import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions;
 import com.google.mlkit.vision.pose.PoseDetectorOptionsBase;
 import com.google.mlkit.vision.pose.accurate.AccuratePoseDetectorOptions;
 import com.google.mlkit.vision.pose.defaults.PoseDetectorOptions;
 import com.ipleiria.moveit.R;
-import com.ipleiria.moveit.posedetector.helpers.vision.CameraSource;
+import com.ipleiria.moveit.posedetector.CameraSource;
 
 /** Utility class to retrieve shared preferences. */
 public class PreferenceUtils {
@@ -100,58 +98,6 @@ public class PreferenceUtils {
     return sharedPreferences.getBoolean(prefKey, false);
   }
 
-
-  private static ObjectDetectorOptions getObjectDetectorOptions(
-      Context context,
-      @StringRes int prefKeyForMultipleObjects,
-      @StringRes int prefKeyForClassification,
-      @DetectorMode int mode) {
-
-    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-    boolean enableMultipleObjects =
-        sharedPreferences.getBoolean(context.getString(prefKeyForMultipleObjects), false);
-    boolean enableClassification =
-        sharedPreferences.getBoolean(context.getString(prefKeyForClassification), true);
-
-    ObjectDetectorOptions.Builder builder =
-        new ObjectDetectorOptions.Builder().setDetectorMode(mode);
-    if (enableMultipleObjects) {
-      builder.enableMultipleObjects();
-    }
-    if (enableClassification) {
-      builder.enableClassification();
-    }
-    return builder.build();
-  }
-
-
-  private static CustomObjectDetectorOptions getCustomObjectDetectorOptions(
-      Context context,
-      LocalModel localModel,
-      @StringRes int prefKeyForMultipleObjects,
-      @StringRes int prefKeyForClassification,
-      @DetectorMode int mode) {
-
-    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-    boolean enableMultipleObjects =
-        sharedPreferences.getBoolean(context.getString(prefKeyForMultipleObjects), false);
-    boolean enableClassification =
-        sharedPreferences.getBoolean(context.getString(prefKeyForClassification), true);
-
-    CustomObjectDetectorOptions.Builder builder =
-        new CustomObjectDetectorOptions.Builder(localModel).setDetectorMode(mode);
-    if (enableMultipleObjects) {
-      builder.enableMultipleObjects();
-    }
-    if (enableClassification) {
-      builder.enableClassification().setMaxPerObjectLabelCount(1);
-    }
-    return builder.build();
-  }
-
-
   public static PoseDetectorOptionsBase getPoseDetectorOptionsForLivePreview(Context context) {
     int performanceMode =
         getModeTypePreferenceValue(
@@ -201,18 +147,6 @@ public class PreferenceUtils {
       return builder.build();
     }
   }
-
-//  public static boolean shouldGroupRecognizedTextInBlocks(Context context) {
-//    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-//    String prefKey = context.getString(R.string.pref_key_group_recognized_text_in_blocks);
-//    return sharedPreferences.getBoolean(prefKey, false);
-//  }
-//
-//  public static boolean showLanguageTag(Context context) {
-//    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-//    String prefKey = context.getString(R.string.pref_key_show_language_tag);
-//    return sharedPreferences.getBoolean(prefKey, false);
-//  }
 
   public static boolean preferGPUForPoseDetection(Context context) {
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -275,24 +209,6 @@ public class PreferenceUtils {
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     String prefKey = context.getString(R.string.pref_key_camera_live_viewport);
     return sharedPreferences.getBoolean(prefKey, false);
-  }
-
-  public static ObjectDetectorOptions getObjectDetectorOptionsForLivePreview(Context context) {
-    return getObjectDetectorOptions(
-            context,
-            R.string.pref_key_live_preview_object_detector_enable_multiple_objects,
-            R.string.pref_key_live_preview_object_detector_enable_classification,
-            ObjectDetectorOptions.STREAM_MODE);
-  }
-
-  public static CustomObjectDetectorOptions getCustomObjectDetectorOptionsForLivePreview(
-          Context context, LocalModel localModel) {
-    return getCustomObjectDetectorOptions(
-            context,
-            localModel,
-            R.string.pref_key_live_preview_object_detector_enable_multiple_objects,
-            R.string.pref_key_live_preview_object_detector_enable_classification,
-            CustomObjectDetectorOptions.STREAM_MODE);
   }
 
   private PreferenceUtils() {}
