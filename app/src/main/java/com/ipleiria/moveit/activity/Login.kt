@@ -62,7 +62,7 @@ class Login : AppCompatActivity(){
                     }?.addOnFailureListener { _ ->
                         println("Email Error")
                         binding.progressBar2.visibility = View.INVISIBLE;
-                        Toast.makeText(applicationContext,"Invalid email or password" , Toast.LENGTH_LONG).show();
+                        Toast.makeText(applicationContext,"Email ou password inválidos." , Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -78,17 +78,17 @@ class Login : AppCompatActivity(){
 
         when {
             email.isEmpty() -> {
-                binding.email.error = "Field is required"
+                binding.email.error = "Campo é obrigatório"
                 view = binding.email
                 error = true
             }
             password.isEmpty() -> {
-                binding.password.error = "Field is required"
+                binding.password.error = "Campo é obrigatório"
                 view = binding.password
                 error = true
             }
             password.length < 6 -> {
-                binding.password.error = "Minimum 6 characters"
+                binding.password.error = "Mínimo de 6 caracteres"
                 view = binding.password
                 error = true
             }

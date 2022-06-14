@@ -76,7 +76,6 @@ class PrescriptionFragment : Fragment() {
     private fun getPrescriptionsFirebase() {
 
         var ref = Firebase.database.getReference("Users").child(auth.uid!!).child("Prescriptions")
-        println("AQUIIIIIIIIII")
 
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
