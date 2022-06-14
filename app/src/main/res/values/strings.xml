@@ -6,6 +6,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Não tem prescrições</string>
     <string name="no_data_available">Não tem prescrições</string>
+    <string name="API_KEY">AIzaSyB0z8IJvOz5S_uEAF6EldQbJ88GJzGO1QI</string>
 
 
     <!-- Settings related strings. -->

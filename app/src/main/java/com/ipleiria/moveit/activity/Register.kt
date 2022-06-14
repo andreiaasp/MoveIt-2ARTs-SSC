@@ -19,13 +19,13 @@ class Register : AppCompatActivity() {
         binding = RegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
         mainApp= MainApp()
-        var pb = binding.progressBar1;
-        pb.visibility = View.INVISIBLE;
+        val pb = binding.progressBar1
+        pb.visibility = View.INVISIBLE
         binding.btnBack.setOnClickListener { onBackPressed() }
         binding.txtLogin.setOnClickListener { onBackPressed() }
         binding.btnSignUp.setOnClickListener {
             if (areFieldReady()) {
-                binding.progressBar1.visibility = View.VISIBLE;
+                binding.progressBar1.visibility = View.VISIBLE
                 mainApp.signUp(email, password, username,pb, applicationContext )
             }
         }
@@ -63,11 +63,11 @@ class Register : AppCompatActivity() {
                 error = true
             }
         }
-        if (error) {
+        return if (error) {
             view?.requestFocus()
-            return false
+            false
         } else {
-            return true
+            true
         }
     }
 }

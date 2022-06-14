@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isUserAuthenticated();
+        isUserAuthenticated()
 
         navDrawerBinding = NavDrawerBinding.inflate(layoutInflater)
         setContentView(navDrawerBinding.root)
@@ -85,9 +85,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 startActivity(Intent(this, LivePreviewActivity::class.java))
                 //Toast.makeText(this, "PoseDetection clicked", Toast.LENGTH_SHORT).show()
             }
-            R.id.btnSetting -> {
-                Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show()
-            }
             R.id.btnLogout -> {
                 Logout()
             }
@@ -99,7 +96,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
      private fun Logout(){
          val pref = applicationContext
              .getSharedPreferences("MyPref", 0)
-         pref.edit().remove("email").apply();
+         pref.edit().remove("email").apply()
          startActivity(Intent(this, Login::class.java))
      }
 

@@ -1,7 +1,6 @@
 package com.ipleiria.moveit.activity
 
 import android.content.Context
-import android.content.Intent
 import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
@@ -12,8 +11,6 @@ import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.ipleiria.moveit.MainActivity
-import com.ipleiria.moveit.databinding.RegisterBinding
 import com.ipleiria.moveit.models.User
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
@@ -21,34 +18,6 @@ import java.lang.Exception
 
 
 class MainApp : AppCompatActivity() {
-    suspend fun login(
-        email: String,
-        password: String
-    ): String? = withContext(Dispatchers.IO) {
-        val auth = Firebase.auth
-        var status=""
-        try {
-            auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-                if(task.isSuccessful && auth.currentUser?.isEmailVerified!!){
-                    Log.d("LOGIN","Login Success")
-                    status = "Login Success"
-                }
-            }.addOnFailureListener { _ ->
-                status = "Verify Email"
-                auth.currentUser?.sendEmailVerification()?.addOnCompleteListener { task ->
-                    println("Email Sent")
-                }?.addOnFailureListener { _ ->
-                    println("Email Error")
-                }
-
-            }
-
-            status
-        } catch (t: Throwable) {
-            null
-        }
-    }
-
     fun signUp(
         email: String,
         password: String,
@@ -67,17 +36,16 @@ class MainApp : AppCompatActivity() {
                 )
 
                 GlobalScope.launch{
-                    createUser(user, auth);
+                    createUser(user, auth)
                 }
 
                 Log.d("REGISTER","Email Verification Sent")
-                progressBar.visibility = View.INVISIBLE;
+                progressBar.visibility = View.INVISIBLE
                 Toast.makeText(applicationContext , "Email de verificação enviado", Toast.LENGTH_LONG).show()
             }
-        }.addOnFailureListener { exception ->
-            progressBar.visibility = View.INVISIBLE;
+        }.addOnFailureListener {
+            progressBar.visibility = View.INVISIBLE
             Toast.makeText(applicationContext, "Ocorreu um erro", Toast.LENGTH_LONG).show()
-            Log.d("REGISTER","FAIL 2" + exception)
         }
     }
 
@@ -99,14 +67,14 @@ class MainApp : AppCompatActivity() {
         val auth = Firebase.auth
         //Toast.makeText(applicationContext,"Password Reset Email Sent" ,Toast.LENGTH_LONG).show();
         try {
-            auth.sendPasswordResetEmail(email).await();
+            auth.sendPasswordResetEmail(email).await()
         } catch (e: Exception) {
             runOnUiThread {
                 Log.d("RESPONSE", "ERROR" + e.message)
             }
         }
         runOnUiThread {
-            Toast.makeText(applicationContext,"Email enviado para recuperar a password" ,Toast.LENGTH_LONG).show();
+            Toast.makeText(applicationContext,"Email enviado para recuperar a password" ,Toast.LENGTH_LONG).show()
         }
 
 

@@ -1,21 +1,17 @@
 package com.ipleiria.moveit.activity
 
 import android.app.AlertDialog
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
-import android.view.View
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -40,7 +36,6 @@ import com.google.maps.PlacesApi
 import com.google.maps.model.PlaceType
 import com.ipleiria.moveit.R
 import com.ipleiria.moveit.adapters.GooglePlaceAdapter
-import com.ipleiria.moveit.adapters.PrescriptionAdapter
 import com.ipleiria.moveit.constants.ProjectConstant
 import com.ipleiria.moveit.databinding.MapViewBinding
 import com.ipleiria.moveit.models.GooglePlace
@@ -249,71 +244,52 @@ class Map: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         } else {
             fusedLocationProviderClient?.lastLocation?.addOnCompleteListener {
                 currentLocation = it.result
-                if (currentLocation != null) {
-                    val latLng = LatLng(currentLocation.latitude, currentLocation.longitude)
-                    mGoogleMap?.addMarker(
-                        MarkerOptions().position(latLng)
-                            .title("You are here!"))
-                    val update = CameraUpdateFactory.newLatLngZoom(latLng, 16.0f)
-                    mGoogleMap?.moveCamera(update)
-                } else {
-                    Log.e(TAG, "No location found")
-                }
+                val latLng = LatLng(currentLocation.latitude, currentLocation.longitude)
+                mGoogleMap?.addMarker(
+                    MarkerOptions().position(latLng)
+                        .title("You are here!"))
+                val update = CameraUpdateFactory.newLatLngZoom(latLng, 16.0f)
+                mGoogleMap?.moveCamera(update)
             }
         }
-    }
-
-    private fun stopLocationUpdates() {
-        fusedLocationProviderClient?.removeLocationUpdates(locationCallback)
-        Log.d("TAG", "stopLocationUpdates: Location Update Stop")
     }
 
     private fun getNearByPlace(placeType: String) {
         var type : PlaceType? = null
         for (i in PlaceType.values()){
             if(i.name.equals(placeType)){
-                println("NAME 2" +i)
                 type = i
             }
         }
         val context: GeoApiContext = GeoApiContext.Builder()
-            .apiKey("AIzaSyB0z8IJvOz5S_uEAF6EldQbJ88GJzGO1QI")
+            .apiKey(getString(R.string.API_KEY))
             .build()
         val location = LatLng(currentLocation.latitude, currentLocation.longitude)
 
         CoroutineScope(Dispatchers.Main).launch {
             try {
-                var request = PlacesApi.nearbySearchQuery(context, convertCoordType(location))
+                val request = PlacesApi.nearbySearchQuery(context, convertCoordType(location))
                     .radius(2000)
                     .type(type)
                     .await()
 
-                if (request.results != null && request.results.size > 0) {
+                if (request.results != null && request.results.isNotEmpty()) {
                     googlePlaceList.clear()
                     mGoogleMap?.clear()
 
                     for (r in request.results) {
                         val name = r.name
-                        //val icon: URL = details.icon
                         val lat = r.geometry.location.lat
                         val lng = r.geometry.location.lng
-                        //val photos = details.photos as Photo
                         val vicinity = r.vicinity
                         val placeId = r.placeId
                         val rating = r.rating
-                        //val types = details.types as Array<AddressType>
                         val place = GooglePlace(lat, lng, name, placeId, rating, vicinity)
                         val time = getDistance(place.lat, place.lng)
-                        println(place.name)
-                        println("TIME " + time)
-                        var boolean = time <= duration + 5
-                        var boolean1 = time > duration
                         if ((!googlePlaceList.contains(place)) && (time <= duration + 5) && (time > duration)) {
-                            println("ENTROU")
                             googlePlaceList.add(place)
                             addMarker(place, time)
                         }
-
                     }
                 } else {
                     mGoogleMap?.clear()
@@ -327,8 +303,7 @@ class Map: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             } catch (e: InterruptedException) {
                 e.printStackTrace()
             } finally {
-                println("AQUI3  " + googlePlaceList)
-                var adapter = GooglePlaceAdapter(googlePlaceList,this@Map)
+                val adapter = GooglePlaceAdapter(googlePlaceList,this@Map)
                 mapBinding.placesRecyclerView.adapter = adapter
 
             }
@@ -339,7 +314,6 @@ class Map: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private fun getDistance(lat: Double, lg: Double): Int{
         val result = FloatArray(1)
         Location.distanceBetween(currentLocation.latitude, currentLocation.longitude,lat,lg,result)
-        println("KM " + (result[0]*0.001))
         val time = result[0] / 1.333 //AVERAGE SPEED WALKING PER PERSON BY GOOGLE
         val minutes = ((time % 86400 ) % 3600 ) / 60
         return minutes.toInt()*2 //COMO A FUNCAO DISTANCEBETWEEN CALCULA A DISTANCIA EM LINHA E NAO POR ROTA,
@@ -358,15 +332,12 @@ class Map: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             .snippet(googlePlaceModel.vicinity)
             .snippet("Time: " + time.toString() + " min")
 
-        //markerOptions.icon(getCustomIcon())
         mGoogleMap?.addMarker(markerOptions)
 
     }
 
-    fun convertCoordType(list: LatLng): com.google.maps.model.LatLng? {
-
-        val result = com.google.maps.model.LatLng(list.latitude, list.longitude)
-        return result
+    private fun convertCoordType(list: LatLng): com.google.maps.model.LatLng {
+        return com.google.maps.model.LatLng(list.latitude, list.longitude)
     }
 
     private fun setUpRecyclerView() {
@@ -380,7 +351,6 @@ class Map: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 val position = linearManager.findFirstCompletelyVisibleItemPosition()
                 if (position > -1) {
                     googlePlaceModel= googlePlaceList[position]
-                    println("GOOGLE PLACE " + googlePlaceModel)
                     mGoogleMap?.animateCamera(
                         CameraUpdateFactory.newLatLngZoom(
                             LatLng(
@@ -400,32 +370,16 @@ class Map: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     override fun onMarkerClick(marker: Marker): Boolean {
         val markerTag = marker.tag as Int
-        Log.d("TAG", "onMarkerClick: $markerTag")
         mapBinding.placesRecyclerView.scrollToPosition(markerTag)
         return false
     }
 
-    fun onDirectionClick(googlePlaceModel:GooglePlace){
-        println("ENTROU " + googlePlaceModel.placeId)
-        var placeId = googlePlaceModel.placeId
-        var lat = googlePlaceModel.lat
-        var long = googlePlaceModel.lng
-        var currentLocation = currentLocation
-        val intent = Intent(this@Map,Directions::class.java)
-    intent.putExtra("placeId",placeId)
-    intent.putExtra("lat",lat)
-    intent.putExtra("long",long)
-    intent.putExtra("long",long)
-    intent.putExtra("currentLocation",currentLocation)
-    startActivity(intent)
-    }
 
     override fun onItemClick(item: GooglePlace, position: Int) {
-        println("ENTROU " + item.placeId)
-        var placeId = item.placeId
-        var lat = item.lat
-        var long = item.lng
-        var currentLocation = currentLocation
+        val placeId = item.placeId
+        val lat = item.lat
+        val long = item.lng
+        val currentLocation = currentLocation
         val intent = Intent(this@Map,Directions::class.java)
         intent.putExtra("placeId",placeId)
         intent.putExtra("lat",lat)

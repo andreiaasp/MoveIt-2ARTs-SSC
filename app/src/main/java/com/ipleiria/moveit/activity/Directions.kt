@@ -9,21 +9,17 @@ import android.os.Bundle
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-import com.google.android.material.snackbar.Snackbar
 import com.google.maps.DirectionsApi
 import com.google.maps.GeoApiContext
 import com.google.maps.errors.ApiException
 import com.google.maps.model.DirectionsLeg
-import com.google.maps.model.DirectionsRoute
 import com.google.maps.model.TravelMode
 import com.ipleiria.moveit.R
-import com.ipleiria.moveit.adapters.GooglePlaceAdapter
 import com.ipleiria.moveit.databinding.DirectionsBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -76,7 +72,7 @@ class Directions: AppCompatActivity(), OnMapReadyCallback {
         when {
             ActivityCompat.checkSelfPermission(
                 this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED -> {
                 isLocationPermissionOk = true
                 setUpGoogleMap()
@@ -84,7 +80,7 @@ class Directions: AppCompatActivity(), OnMapReadyCallback {
 
             ActivityCompat.shouldShowRequestPermissionRationale(
                 this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION
             ) -> {
                 AlertDialog.Builder(this)
                     .setTitle("Location Permission")
@@ -133,24 +129,18 @@ class Directions: AppCompatActivity(), OnMapReadyCallback {
         var summary: String? = null
         if (isLocationPermissionOk) {
             val context: GeoApiContext = GeoApiContext.Builder()
-                .apiKey("AIzaSyB0z8IJvOz5S_uEAF6EldQbJ88GJzGO1QI")
+                .apiKey(getString(R.string.API_KEY))
                 .build()
 
             CoroutineScope(Dispatchers.Main).launch {
                 try {
-                    var request = DirectionsApi.getDirections(
+                    val request = DirectionsApi.getDirections(
                         context,
                         currentLocation!!.latitude.toString() + "," + currentLocation!!.longitude.toString(),
                         "place_id:" + placeId
                     )
                         .mode(TravelMode.WALKING).await()
 
-
-                    /*val url = "https://maps.googleapis.com/maps/api/directions/json?" +
-                    "origin=" + currentLocation.latitude + "," + currentLocation.longitude +
-                    "&destination=" + endLat + "," + endLng +
-                    "&mode=" + mode +
-                    "&key=" + resources.getString(R.string.API_KEY)*/
                     for (r in request.routes) {
                         legModel = r.legs?.get(0)
                         summary = r.summary
@@ -176,8 +166,7 @@ class Directions: AppCompatActivity(), OnMapReadyCallback {
                         visible(true)
                     }
 
-                    val pattern: List<PatternItem>
-                    pattern = listOf(
+                    val pattern: List<PatternItem> = listOf(
                         Dot(), Gap(10f)
                     )
                     options.jointType(JointType.ROUND)
@@ -204,19 +193,19 @@ class Directions: AppCompatActivity(), OnMapReadyCallback {
 
                     val endLocation = LatLng(
                         legModel!!.endLocation?.lat!!,
-                        legModel!!.endLocation.lng!!
+                        legModel!!.endLocation.lng
                     )
 
                     mGoogleMap?.addMarker(
                         MarkerOptions()
                             .position(endLocation)
-                            .title("End Location")
+                            .title("Destino")
                     )
 
                     mGoogleMap?.addMarker(
                         MarkerOptions()
                             .position(startLocation)
-                            .title("Start Location")
+                            .title("Você está aqui!")
                     )
 
                     val builder = LatLngBounds.builder()
@@ -224,7 +213,7 @@ class Directions: AppCompatActivity(), OnMapReadyCallback {
                     val latLngBounds = builder.build()
 
 
-                    mGoogleMap?.animateCamera(
+                    mGoogleMap!!.animateCamera(
                         CameraUpdateFactory.newLatLngBounds(
                             latLngBounds, 0
                         )
@@ -243,34 +232,4 @@ class Directions: AppCompatActivity(), OnMapReadyCallback {
 
         }
     }
-
-    private fun decode(points: String): List<com.google.maps.model.LatLng> {
-        val len = points.length
-        val path: MutableList<com.google.maps.model.LatLng> = java.util.ArrayList(len / 2)
-        var index = 0
-        var lat = 0
-        var lng = 0
-        while (index < len) {
-            var result = 1
-            var shift = 0
-            var b: Int
-            do {
-                b = points[index++].toInt() - 63 - 1
-                result += b shl shift
-                shift += 5
-            } while (b >= 0x1f)
-            lat += if (result and 1 != 0) (result shr 1).inv() else result shr 1
-            result = 1
-            shift = 0
-            do {
-                b = points[index++].toInt() - 63 - 1
-                result += b shl shift
-                shift += 5
-            } while (b >= 0x1f)
-            lng += if (result and 1 != 0) (result shr 1).inv() else result shr 1
-            path.add(com.google.maps.model.LatLng(lat * 1e-5, lng * 1e-5))
-        }
-        return path
-    }
-
 }

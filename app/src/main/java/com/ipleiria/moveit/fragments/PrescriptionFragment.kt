@@ -75,29 +75,28 @@ class PrescriptionFragment : Fragment() {
 
     private fun getPrescriptionsFirebase() {
 
-        var ref = Firebase.database.getReference("Users").child(auth.uid!!).child("Prescriptions")
+        val ref = Firebase.database.getReference("Users").child(auth.uid!!).child("Prescriptions")
 
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     prescriptionList = ArrayList()
                     for (postSnapshot in snapshot.children) {
-                        val duration = postSnapshot.child("duration").getValue().toString().toInt()
-                        val name = postSnapshot.child("name").getValue() as String
+                        val duration = postSnapshot.child("duration").value.toString().toInt()
+                        val name = postSnapshot.child("name").value as String
                         val prescription = Prescription(name, duration)
-                        println(prescription)
-                        prescriptionList.add(prescription!!)
+                        prescriptionList.add(prescription)
                     }
-                        var adapter = PrescriptionAdapter(prescriptionList)
+                        val adapter = PrescriptionAdapter(prescriptionList)
                         prescriptionBinding.mRecycler.adapter = adapter
                         adapter.setOnItemClickListener(object: PrescriptionAdapter.onItemClickListener{
                             override fun onItemClick(position: Int) {
                                 Toast.makeText(
                                     requireContext(),
-                                    "You clicked on item no. ${position}",
+                                    "You clicked on item no. $position",
                                     Toast.LENGTH_SHORT
                                 ).show()
-                                val intent = Intent(getActivity(),Map::class.java)
+                                val intent = Intent(activity,Map::class.java)
                                 intent.putExtra("duration",prescriptionList[position].duration.toInt())
                                 startActivity(intent)
                             }
@@ -109,8 +108,8 @@ class PrescriptionFragment : Fragment() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }else{
-                    empv.visibility = View.VISIBLE;
-                    recv.visibility = View.INVISIBLE;
+                    empv.visibility = View.VISIBLE
+                    recv.visibility = View.INVISIBLE
                 }
             }
 
@@ -134,22 +133,22 @@ class PrescriptionFragment : Fragment() {
         addDialog.setView(v)
         addDialog.setPositiveButton("Ok"){
                 dialog,_->
-            val name = name.text.toString()
-            val number = Integer.parseInt(duration.getText().toString())
-            val prescription = Prescription(name,number)
+            val namePres = name.text.toString()
+            val number = Integer.parseInt(duration.text.toString())
+            val prescription = Prescription(namePres,number)
 
-            prescriptionList.add(Prescription(name,number))
+            prescriptionList.add(Prescription(namePres,number))
             Toast.makeText(requireContext(),"Adding Prescription Information Success",Toast.LENGTH_SHORT).show()
 
             GlobalScope.launch{
-                createPrescriptionFirebase(prescription, auth);
+                createPrescriptionFirebase(prescription, auth)
             }
             dialog.dismiss()
         }
-        addDialog.setNegativeButton("Cancel"){
+        addDialog.setNegativeButton("Cancelar"){
                 dialog,_->
             dialog.dismiss()
-            Toast.makeText(requireContext(),"Cancel",Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),"Cancelar",Toast.LENGTH_SHORT).show()
 
         }
         addDialog.create()

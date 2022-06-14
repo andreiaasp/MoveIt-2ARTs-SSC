@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ipleiria.moveit.R
 import com.ipleiria.moveit.models.Prescription
 
-class PrescriptionAdapter(val prescriptionList:ArrayList<Prescription>):RecyclerView.Adapter<PrescriptionAdapter.PrescriptionViewHolder>(){
+class PrescriptionAdapter(private val prescriptionList:ArrayList<Prescription>):RecyclerView.Adapter<PrescriptionAdapter.PrescriptionViewHolder>(){
 
     private lateinit var mlistener:onItemClickListener
 

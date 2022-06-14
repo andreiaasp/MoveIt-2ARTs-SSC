@@ -18,14 +18,14 @@ class Login : AppCompatActivity(){
     private lateinit var email: String
     private lateinit var password: String
     private lateinit var mainApp: MainApp
-    val auth = Firebase.auth
+    private val auth = Firebase.auth
 
     override fun onCreate(savedInstanceState: Bundle?)  {
         super.onCreate(savedInstanceState)
         binding = LoginBinding.inflate(layoutInflater)
         mainApp= MainApp()
-        var pb = binding.progressBar2;
-        pb.visibility = View.INVISIBLE;
+        val pb = binding.progressBar2
+        pb.visibility = View.INVISIBLE
 
         setContentView(binding.root)
         val pref = applicationContext
@@ -42,27 +42,24 @@ class Login : AppCompatActivity(){
 
         binding.btnLogin.setOnClickListener {
             if (areFieldReady()) {
-                binding.progressBar2.visibility = View.VISIBLE;
+                binding.progressBar2.visibility = View.VISIBLE
 
                 auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                     if(task.isSuccessful && auth.currentUser?.isEmailVerified!!){
                         Log.d("LOGIN","Login Success")
-                        binding.progressBar2.visibility = View.INVISIBLE;
-                        editor.putString("email", email);
-                        editor.commit();
+                        binding.progressBar2.visibility = View.INVISIBLE
+                        editor.putString("email", email)
+                        editor.commit()
                         val intent = Intent(this@Login, MainActivity::class.java)
                         startActivity(intent)
                     }
-                }.addOnFailureListener { _ ->
-                    auth.currentUser?.sendEmailVerification()?.addOnCompleteListener { task ->
+                }.addOnFailureListener {
+                    auth.currentUser?.sendEmailVerification()?.addOnCompleteListener { _ ->
                         println("Email Sent")
-                        /*binding.progressBar2.visibility = View.INVISIBLE;
-                        Toast.makeText(applicationContext,"Invalid email or password" , Toast.LENGTH_LONG).show();
-*/
                     }?.addOnFailureListener { _ ->
                         println("Email Error")
-                        binding.progressBar2.visibility = View.INVISIBLE;
-                        Toast.makeText(applicationContext,"Email ou password inválidos." , Toast.LENGTH_LONG).show();
+                        binding.progressBar2.visibility = View.INVISIBLE
+                        Toast.makeText(applicationContext,"Email ou password inválidos." , Toast.LENGTH_LONG).show()
                     }
                 }
             }
@@ -93,11 +90,11 @@ class Login : AppCompatActivity(){
                 error = true
             }
         }
-        if (error) {
+        return if (error) {
             view?.requestFocus()
-            return false
+            false
         } else {
-            return true
+            true
         }
     }
 }
