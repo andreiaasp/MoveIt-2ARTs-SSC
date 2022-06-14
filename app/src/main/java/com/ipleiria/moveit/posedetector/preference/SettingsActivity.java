@@ -24,7 +24,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.ipleiria.moveit.R;
 
-
 /**
  * Hosts the preference fragment to configure settings for a demo activity that specified by the
  * {@link LaunchSource}.
@@ -37,6 +36,7 @@ public class SettingsActivity extends AppCompatActivity {
   @SuppressWarnings("NewApi") // CameraX is only available on API 21+
   public enum LaunchSource {
     LIVE_PREVIEW(R.string.pref_screen_title_live_preview, LivePreviewPreferenceFragment.class),
+    STILL_IMAGE(R.string.pref_screen_title_still_image, StillImagePreferenceFragment.class),
     CAMERAX_LIVE_PREVIEW(
         R.string.pref_screen_title_camerax_live_preview,
         CameraXLivePreviewPreferenceFragment.class),

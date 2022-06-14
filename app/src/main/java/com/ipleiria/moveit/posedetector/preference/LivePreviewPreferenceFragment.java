@@ -25,7 +25,7 @@ import android.preference.PreferenceFragment;
 import androidx.annotation.StringRes;
 
 import com.ipleiria.moveit.R;
-import com.ipleiria.moveit.posedetector.helpers.vision.CameraSource;
+import com.ipleiria.moveit.posedetector.CameraSource;
 
 import java.util.HashMap;
 import java.util.List;
