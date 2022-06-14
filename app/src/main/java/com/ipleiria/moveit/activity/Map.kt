@@ -2,11 +2,14 @@ package com.ipleiria.moveit.activity
 
 import android.app.AlertDialog
 import android.content.ContentValues.TAG
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
+import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -47,16 +50,17 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 
 
-class Map: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+class Map: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
+    GooglePlaceAdapter.onItemClickListener {
 
     private lateinit var mapBinding: MapViewBinding
     private lateinit var googlePlaceList: ArrayList<GooglePlace>
-    private lateinit var googlePlaceListTime: ArrayList<GooglePlace>
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
     private var isLocationPermissionOk = false
     private lateinit var supportMap : SupportMapFragment
     private var mGoogleMap: GoogleMap? = null
+    private var googlePlaceModel : GooglePlace? = null
     private var permissionToRequest = mutableListOf<String>()
     private lateinit var currentLocation: Location
     private var duration: Int = 0
@@ -71,12 +75,22 @@ class Map: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         setContentView(mapBinding.root)
 
+
+
         val bundle :Bundle? = intent.extras
         duration = bundle!!.getInt("duration")
 
         firebaseAuth = Firebase.auth
         googlePlaceList = ArrayList()
-        googlePlaceListTime = ArrayList()
+        googlePlaceAdapter = GooglePlaceAdapter(googlePlaceList,this)
+
+        mapBinding.placesRecyclerView.apply {
+            layoutManager = LinearLayoutManager(this@Map,LinearLayoutManager.HORIZONTAL,false)
+            setHasFixedSize(true)
+            adapter = googlePlaceAdapter
+        }
+
+
 
         permissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
@@ -314,8 +328,9 @@ class Map: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 e.printStackTrace()
             } finally {
                 println("AQUI3  " + googlePlaceList)
-                var adapter = GooglePlaceAdapter(googlePlaceList)
+                var adapter = GooglePlaceAdapter(googlePlaceList,this@Map)
                 mapBinding.placesRecyclerView.adapter = adapter
+
             }
         }
 
@@ -356,10 +371,6 @@ class Map: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     private fun setUpRecyclerView() {
         val snapHelper: SnapHelper = PagerSnapHelper()
-        googlePlaceAdapter = GooglePlaceAdapter(googlePlaceList)
-        mapBinding.placesRecyclerView.layoutManager = LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
-        mapBinding.placesRecyclerView.setHasFixedSize(false)
-        mapBinding.placesRecyclerView.adapter = googlePlaceAdapter
 
         mapBinding.placesRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -368,17 +379,19 @@ class Map: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 val linearManager = recyclerView.layoutManager as LinearLayoutManager
                 val position = linearManager.findFirstCompletelyVisibleItemPosition()
                 if (position > -1) {
-                    val googlePlaceModel: GooglePlace = googlePlaceList[position]
+                    googlePlaceModel= googlePlaceList[position]
                     println("GOOGLE PLACE " + googlePlaceModel)
                     mGoogleMap?.animateCamera(
                         CameraUpdateFactory.newLatLngZoom(
                             LatLng(
-                                googlePlaceModel.lat,
-                                googlePlaceModel.lng
+                                googlePlaceModel!!.lat,
+                                googlePlaceModel!!.lng
                             ), 20f
                         )
                     )
                 }
+
+
             }
         })
         snapHelper.attachToRecyclerView(mapBinding.placesRecyclerView)
@@ -390,6 +403,36 @@ class Map: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         Log.d("TAG", "onMarkerClick: $markerTag")
         mapBinding.placesRecyclerView.scrollToPosition(markerTag)
         return false
+    }
+
+    fun onDirectionClick(googlePlaceModel:GooglePlace){
+        println("ENTROU " + googlePlaceModel.placeId)
+        var placeId = googlePlaceModel.placeId
+        var lat = googlePlaceModel.lat
+        var long = googlePlaceModel.lng
+        var currentLocation = currentLocation
+        val intent = Intent(this@Map,Directions::class.java)
+    intent.putExtra("placeId",placeId)
+    intent.putExtra("lat",lat)
+    intent.putExtra("long",long)
+    intent.putExtra("long",long)
+    intent.putExtra("currentLocation",currentLocation)
+    startActivity(intent)
+    }
+
+    override fun onItemClick(item: GooglePlace, position: Int) {
+        println("ENTROU " + item.placeId)
+        var placeId = item.placeId
+        var lat = item.lat
+        var long = item.lng
+        var currentLocation = currentLocation
+        val intent = Intent(this@Map,Directions::class.java)
+        intent.putExtra("placeId",placeId)
+        intent.putExtra("lat",lat)
+        intent.putExtra("long",long)
+        intent.putExtra("long",long)
+        intent.putExtra("currentLocation",currentLocation)
+        startActivity(intent)
     }
 
 

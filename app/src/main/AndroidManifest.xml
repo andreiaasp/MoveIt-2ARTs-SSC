@@ -28,6 +28,7 @@
             android:exported="false" />
         <activity android:name=".activity.MainApp" />
         <activity android:name=".activity.ForgetPassword" />
+        <activity android:name=".activity.Directions" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
