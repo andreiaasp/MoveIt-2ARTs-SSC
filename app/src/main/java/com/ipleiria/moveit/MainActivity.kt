@@ -24,6 +24,7 @@ import com.ipleiria.moveit.databinding.ActivityMainBinding
 import com.ipleiria.moveit.databinding.NavDrawerBinding
 import com.ipleiria.moveit.databinding.ToolbarBinding
 import com.ipleiria.moveit.models.User
+import com.ipleiria.moveit.posedetector.CameraXLivePreviewActivity
 import com.ipleiria.moveit.posedetector.LivePreviewActivity
 import com.ipleiria.moveit.posedetector.helpers.MLVideoHelperActivity
 
@@ -84,7 +85,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Toast.makeText(this, "Prescriptions clicked", Toast.LENGTH_SHORT).show()
             }
             R.id.btnPoseDetection -> {
-                startActivity(Intent(this, LivePreviewActivity::class.java))
+                startActivity(Intent(this, CameraXLivePreviewActivity::class.java))
                 //Toast.makeText(this, "PoseDetection clicked", Toast.LENGTH_SHORT).show()
             }
             R.id.btnSetting -> {

@@ -277,5 +277,23 @@ public class PreferenceUtils {
     return sharedPreferences.getBoolean(prefKey, false);
   }
 
+  public static ObjectDetectorOptions getObjectDetectorOptionsForLivePreview(Context context) {
+    return getObjectDetectorOptions(
+            context,
+            R.string.pref_key_live_preview_object_detector_enable_multiple_objects,
+            R.string.pref_key_live_preview_object_detector_enable_classification,
+            ObjectDetectorOptions.STREAM_MODE);
+  }
+
+  public static CustomObjectDetectorOptions getCustomObjectDetectorOptionsForLivePreview(
+          Context context, LocalModel localModel) {
+    return getCustomObjectDetectorOptions(
+            context,
+            localModel,
+            R.string.pref_key_live_preview_object_detector_enable_multiple_objects,
+            R.string.pref_key_live_preview_object_detector_enable_classification,
+            CustomObjectDetectorOptions.STREAM_MODE);
+  }
+
   private PreferenceUtils() {}
 }

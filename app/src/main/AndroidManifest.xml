@@ -18,6 +18,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MoveIt">
         <activity
+            android:name=".posedetector.CameraXLivePreviewActivity"
+            android:exported="false" />
+        <activity
             android:name=".posedetector.LivePreviewActivity"
             android:exported="false" />
         <activity
