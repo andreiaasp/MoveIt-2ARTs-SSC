@@ -42,23 +42,23 @@ class Register : AppCompatActivity() {
 
         when {
             username.isEmpty() -> {
-                binding.username.error = "Field is required"
+                binding.username.error = "Campo é obrigatório"
                 view = binding.username
                 error = true
             }
 
             email.isEmpty() -> {
-                binding.email.error = "Field is required"
+                binding.email.error = "Campo é obrigatório"
                 view = binding.email
                 error = true
             }
             password.isEmpty() -> {
-                binding.password.error = "Field is required"
+                binding.password.error = "Campo é obrigatório"
                 view = binding.password
                 error = true
             }
             password.length < 6 -> {
-                binding.password.error = "Minimum 6 characters"
+                binding.password.error = "Mínimo de 6 caracteres"
                 view = binding.password
                 error = true
             }

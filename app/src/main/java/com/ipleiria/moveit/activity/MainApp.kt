@@ -72,11 +72,11 @@ class MainApp : AppCompatActivity() {
 
                 Log.d("REGISTER","Email Verification Sent")
                 progressBar.visibility = View.INVISIBLE;
-                Toast.makeText(applicationContext , "Email Verification Sent", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext , "Email de verificação enviado", Toast.LENGTH_LONG).show()
             }
         }.addOnFailureListener { exception ->
             progressBar.visibility = View.INVISIBLE;
-            Toast.makeText(applicationContext, "ERROR", Toast.LENGTH_LONG).show()
+            Toast.makeText(applicationContext, "Ocorreu um erro", Toast.LENGTH_LONG).show()
             Log.d("REGISTER","FAIL 2" + exception)
         }
     }
@@ -106,7 +106,7 @@ class MainApp : AppCompatActivity() {
             }
         }
         runOnUiThread {
-            Toast.makeText(applicationContext,"Password Reset Email Sent" ,Toast.LENGTH_LONG).show();
+            Toast.makeText(applicationContext,"Email enviado para recuperar a password" ,Toast.LENGTH_LONG).show();
         }
 
 
