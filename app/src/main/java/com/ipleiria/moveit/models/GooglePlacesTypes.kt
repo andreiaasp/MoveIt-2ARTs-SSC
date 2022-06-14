@@ -1,9 +1,9 @@
-package com.ipleiria.moveit.constants
+package com.ipleiria.moveit.models
 
 import com.ipleiria.moveit.R
 import com.ipleiria.moveit.models.TypePlace
 
-class ProjectConstant {
+class GooglePlacesTypes {
     companion object {
         val placesName =
             listOf(

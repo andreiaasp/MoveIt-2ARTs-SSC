@@ -36,7 +36,7 @@ import com.google.maps.PlacesApi
 import com.google.maps.model.PlaceType
 import com.ipleiria.moveit.R
 import com.ipleiria.moveit.adapters.GooglePlaceAdapter
-import com.ipleiria.moveit.constants.ProjectConstant
+import com.ipleiria.moveit.models.GooglePlacesTypes
 import com.ipleiria.moveit.databinding.MapViewBinding
 import com.ipleiria.moveit.models.GooglePlace
 import kotlinx.coroutines.CoroutineScope
@@ -104,7 +104,7 @@ class Map: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         supportMap = supportFragmentManager.findFragmentById(R.id.homeMap) as SupportMapFragment
         supportMap.getMapAsync(this)
 
-        for (place in ProjectConstant.placesName) {
+        for (place in GooglePlacesTypes.placesName) {
             val chip = Chip(this)
             chip.text = place.name
             chip.id = place.id
@@ -120,7 +120,7 @@ class Map: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         mapBinding.placesGroup.setOnCheckedChangeListener { _, checkedId ->
 
             if (checkedId != -1) {
-                val place = ProjectConstant.placesName[checkedId - 1]
+                val place = GooglePlacesTypes.placesName[checkedId - 1]
                 getNearByPlace(place.placeType)
             }
         }
