@@ -247,7 +247,7 @@ class Map: AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 val latLng = LatLng(currentLocation.latitude, currentLocation.longitude)
                 mGoogleMap?.addMarker(
                     MarkerOptions().position(latLng)
-                        .title("You are here!"))
+                        .title("Você está aqui!"))
                 val update = CameraUpdateFactory.newLatLngZoom(latLng, 16.0f)
                 mGoogleMap?.moveCamera(update)
             }
